@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/dashboard">
+
+    <fragment
+        android:id="@+id/dashboard"
+        android:name="org.hz240.wallefy.dashboard.dashboardFragment"
+        android:label="Dashboard" >
+        <action
+            android:id="@+id/action_to_dashboard_to_to_pengeluaran"
+            app:destination="@id/pengeluaran"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_to_dashboard_to_pengaturanFragment"
+            app:destination="@id/pengaturan"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_to_dashboard_to_to_pemasukan"
+            app:destination="@id/pemasukan"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_to_dashboard_to_to_anggota"
+            app:destination="@id/anggota"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/anggota"
+        android:name="org.hz240.wallefy.anggota.anggotaFragment"
+        android:label="Anggota"
+        tools:layout="@layout/fragment_anggota" />
+    <fragment
+        android:id="@+id/pemasukan"
+        android:name="org.hz240.wallefy.pemasukan.pemasukanFragment"
+        android:label="Pemasukan"
+        tools:layout="@layout/fragment_pemasukan" />
+    <fragment
+        android:id="@+id/pengeluaran"
+        android:name="org.hz240.wallefy.pengeluaran.pengeluaranFragment"
+        android:label="Pengeluaran"
+        tools:layout="@layout/fragment_pengeluaran" />
+    <fragment
+        android:id="@+id/pengaturan"
+        android:name="org.hz240.wallefy.pengaturan.pengaturanFragment"
+        android:label="Pengaturan">
+        <action
+            android:id="@+id/action_pengaturanFragment_to_to_dashboard"
+            app:destination="@id/dashboard"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+</navigation>
