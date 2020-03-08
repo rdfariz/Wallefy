@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.transactions_item.view.*
 import org.hz240.wallefy.R
 
-class LatestTransactionsAdapter(private val myDataset: ArrayList<HashMap<String, Any>>) :
-    RecyclerView.Adapter<LatestTransactionsAdapter.MyViewHolder>() {
+class TransactionsAdapter(private val myDataset: ArrayList<HashMap<String, Any>>) :
+    RecyclerView.Adapter<TransactionsAdapter.MyViewHolder>() {
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and

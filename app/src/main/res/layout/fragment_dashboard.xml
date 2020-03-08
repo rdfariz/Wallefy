@@ -3,6 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable name="dataUsersViewModel" type="org.hz240.wallefy.dashboard.UserViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -56,7 +60,7 @@
                         android:id="@+id/tv_user_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="RdFariz"
+                        android:text="@{@string/username_print(dataUsersViewModel.userLogin.username)}"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="#ffffff"></TextView>
@@ -65,7 +69,7 @@
                         android:id="@+id/tv_user_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Bendahara Indonesia"
+                        android:text="@{dataUsersViewModel.userLogin.status}"
                         android:textSize="14sp"
                         android:textColor="#ffffff"></TextView>
                 </LinearLayout>
@@ -80,6 +84,15 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{()->dataUsersViewModel.changeName()}"
+                    android:text="Change name"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_setting"
+                    app:layout_constraintTop_toTopOf="parent"></Button>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -130,8 +143,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tv_money_total"
                     app:layout_constraintTop_toBottomOf="@+id/tv_money_total"></TextView>
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/titleSection"
