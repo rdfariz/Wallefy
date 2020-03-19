@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
+import com.google.firebase.auth.FirebaseAuth
 import org.hz240.wallefy.MainActivity
 import org.hz240.wallefy.R
 import org.hz240.wallefy.dashboard.UserViewModel
@@ -33,6 +34,13 @@ class pengaturanFragment : Fragment() {
 
         binding.btnClose.setOnClickListener {view: View ->
 //            view.findNavController().navigate(R.id.action_pengaturanFragment_to_to_dashboard)
+            activity?.let{
+                val intent = Intent (it, MainActivity::class.java)
+                it.startActivity(intent)
+            }
+        }
+        binding.toSignout.setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
             activity?.let{
                 val intent = Intent (it, MainActivity::class.java)
                 it.startActivity(intent)

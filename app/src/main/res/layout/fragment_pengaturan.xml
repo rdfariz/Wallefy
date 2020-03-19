@@ -121,13 +121,15 @@ xmlns:tools="http://schemas.android.com/tools">
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/to_notification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_border_bottom"
-                app:layout_constraintTop_toBottomOf="@+id/to_account_info"
-                app:layout_constraintStart_toStartOf="parent">
+                android:padding="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/to_account_info">
 
                 <Button
                     android:id="@+id/icon_notification"
@@ -150,6 +152,41 @@ xmlns:tools="http://schemas.android.com/tools">
                     app:layout_constraintBottom_toBottomOf="@+id/icon_notification"
                     app:layout_constraintStart_toEndOf="@+id/icon_notification"
                     app:layout_constraintTop_toTopOf="@+id/icon_notification"
+                    app:layout_constraintVertical_bias="0.545"></TextView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/to_signout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_border_bottom"
+                android:padding="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/to_notification">
+
+                <Button
+                    android:id="@+id/icon_signout"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_exit_to_app_black_24dp"
+                    android:drawablePadding="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:text="Sign out"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/icon_signout"
+                    app:layout_constraintStart_toEndOf="@+id/icon_signout"
+                    app:layout_constraintTop_toTopOf="@+id/icon_signout"
                     app:layout_constraintVertical_bias="0.545"></TextView>
             </androidx.constraintlayout.widget.ConstraintLayout>
 

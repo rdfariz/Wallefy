@@ -8,11 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import org.hz240.wallefy.R
-import org.hz240.wallefy.SettingsActivity
+import org.hz240.wallefy.pengaturan.SettingsActivity
 import org.hz240.wallefy.databinding.FragmentDashboardBinding
 import java.lang.Exception
 
@@ -49,13 +51,18 @@ class dashboardFragment : Fragment() {
 
         binding.dataUsersViewModel = userLoginVM
 
-
         viewManager = LinearLayoutManager(context)
         viewAdapter = TransactionsAdapter(transactionsVM.transactions.value!!)
         recyclerView = binding.rvLatestTransactions.apply {
             layoutManager = viewManager
             adapter = viewAdapter
         }
+
+        val picasso = Picasso.get()
+        userLoginVM.userLogin.observe(viewLifecycleOwner, Observer {
+            var photoUrl = it.get("photoUrl").toString()
+            picasso.load(photoUrl).placeholder(R.drawable.ic_sync_black_24dp).error(R.drawable.ic_person_black_24dp).into(binding.ivUserImage)
+        })
 
         binding.btnSetting.setOnClickListener {view: View ->
             try {

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "398907142274",
+    "firebase_url": "https://wallefy-240.firebaseio.com",
+    "project_id": "wallefy-240",
+    "storage_bucket": "wallefy-240.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:398907142274:android:87712825cd7809dc26849b",
+        "android_client_info": {
+          "package_name": "org.hz240.wallefy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "398907142274-ig60k27gf7jmfijcm41fu2fotpead0jh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.hz240.wallefy",
+            "certificate_hash": "fb866b46d5d38c48646a5e8d3ea9e310712f80e8"
+          }
+        },
+        {
+          "client_id": "398907142274-im01uaeq69jo5b94v1ripeqhhg8sp7v9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5HPFgMgkNJ6xqT7nh1SKBxm7L-LmOzMs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "398907142274-im01uaeq69jo5b94v1ripeqhhg8sp7v9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
