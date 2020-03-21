@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import org.hz240.wallefy.communityList.CommunityListActivity
 
 class SplashActivity : AppCompatActivity() {
 
@@ -15,7 +16,7 @@ class SplashActivity : AppCompatActivity() {
             // This method will be executed once the timer is over
             // Start your app main activity
 
-            startActivity(Intent(this,MainActivity::class.java))
+            startActivity(Intent(this, CommunityListActivity::class.java))
 
             // close this activity
             finish()

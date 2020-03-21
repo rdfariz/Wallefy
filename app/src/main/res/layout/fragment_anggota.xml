@@ -2,94 +2,55 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable name="dataCommunityViewModel" type="org.hz240.wallefy.communityList.CommunityListViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFFFF"
-        tools:context=".anggota.anggotaFragment">
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        tools:context=".detailCommunity.anggota.anggotaFragment">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/search_section"
-                android:layout_margin="16dp"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteX="16dp">
-
-                <TextView
-                    android:id="@+id/tv_titleDataAnggota"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Data Anggota"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"></TextView>
-                <androidx.appcompat.widget.SearchView
-                    android:id="@+id/search_anggota"
-                    android:background="@drawable/search_box"
-                    app:queryBackground="@android:color/transparent"
-                    android:layout_marginTop="8dp"
-                    app:queryHint="Search"
-                    app:iconifiedByDefault="false"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_titleDataAnggota">
-                </androidx.appcompat.widget.SearchView>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <TextView
-                android:id="@+id/tv_titleNameList"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="List Anggota"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/search_section"
-                app:layout_constraintTop_toBottomOf="@+id/search_section"></TextView>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_anggota"
-                android:nestedScrollingEnabled="false"
-                tools:listitem="@layout/people_item"
-                tools:itemCount="2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="vertical"
-                android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="@+id/tv_titleNameList"
-                app:layout_constraintStart_toStartOf="@+id/tv_titleNameList"
-                app:layout_constraintTop_toBottomOf="@+id/tv_titleNameList"/>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                app:layout_constraintTop_toBottomOf="@id/rv_anggota">
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/addAnggota"
+        <ProgressBar
+            app:toggleLoading="@{dataCommunityViewModel.loading}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
-            android:clickable="true"
-            app:backgroundTint="@color/blue_custom_2"
+            android:indeterminateTint="@color/gray_custom"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="parent">
+        </ProgressBar>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/itemsswipetorefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="0px"
+            android:layout_weight="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/mdi_add" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_anggota"
+                    android:paddingTop="16dp"
+                    android:clipToPadding="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:toggleLoading="@{dataCommunityViewModel.loading}"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/people_item"/>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

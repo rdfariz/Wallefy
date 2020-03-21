@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/community_list"
+    app:startDestination="@id/communityListFragment">
+
+    <fragment
+        android:id="@+id/communityListFragment"
+        android:name="org.hz240.wallefy.communityList.communityListFragment"
+        android:label="Daftar Komunitas"
+        tools:layout="@layout/fragment_community_list">
+        <action
+            android:id="@+id/action_communityListFragment_to_pengaturanFragment"
+            app:destination="@id/pengaturanFragment" />
+        <action
+            android:id="@+id/action_communityListFragment_to_joinCommunityFragment"
+            app:destination="@id/joinCommunityFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/pengaturanFragment"
+        android:name="org.hz240.wallefy.pengaturan.pengaturanFragment"
+        android:label="Pengaturan" />
+    <fragment
+        android:id="@+id/joinCommunityFragment"
+        android:name="org.hz240.wallefy.communityList.joinCommunityFragment"
+        android:label="Join Komunitas"
+        tools:layout="@layout/fragment_join_community" >
+        <action
+            android:id="@+id/action_joinCommunityFragment_to_communityListFragment"
+            app:destination="@id/communityListFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+</navigation>

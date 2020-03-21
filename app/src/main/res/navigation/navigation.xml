@@ -24,7 +24,7 @@
             app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right" />
         <action
-            android:id="@+id/action_to_dashboard_to_to_pemasukan"
+            android:id="@+id/pemasukan"
             app:destination="@id/pemasukan"
             app:enterAnim="@anim/enter_from_right"
             app:exitAnim="@anim/exit_to_left"
@@ -40,7 +40,7 @@
     </fragment>
     <fragment
         android:id="@+id/anggota"
-        android:name="org.hz240.wallefy.anggota.anggotaFragment"
+        android:name="org.hz240.wallefy.detailCommunity.anggota.anggotaFragment"
         android:label="Anggota"
         tools:layout="@layout/fragment_anggota" />
     <fragment

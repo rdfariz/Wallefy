@@ -9,4 +9,6 @@
     <color name="blue_custom_2">#90CAF9</color>
     <color name="gray_custom">#A0A4A8</color>
 
+    <color name="transparent">#75000000</color>
+
 </resources>

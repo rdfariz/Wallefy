@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import org.hz240.wallefy.MainActivity
 import org.hz240.wallefy.R
+import org.hz240.wallefy.communityList.CommunityListActivity
 import org.hz240.wallefy.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
@@ -26,6 +27,10 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var mGoogleSignInOptions: GoogleSignInOptions
     private lateinit var firebaseAuth: FirebaseAuth
+
+    init {
+        firebaseAuth = FirebaseAuth.getInstance()
+    }
 
     private fun configureGoogleSignIn() {
         mGoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -59,15 +64,13 @@ class LoginActivity : AppCompatActivity() {
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
-                val intent = Intent(this, MainActivity::class.java)
+                Toast.makeText(this, "Login sebagai ${firebaseAuth.currentUser?.displayName.toString()}", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, CommunityListActivity::class.java)
                 startActivity(intent)
             } else {
                 Toast.makeText(this, "Google sign in failed:(", Toast.LENGTH_LONG).show()
             }
         }
-    }
-    init {
-        firebaseAuth = FirebaseAuth.getInstance()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

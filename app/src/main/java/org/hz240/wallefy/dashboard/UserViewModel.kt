@@ -1,7 +1,6 @@
 package org.hz240.wallefy.dashboard
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,12 +14,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import org.hz240.wallefy.model.Info
-import org.hz240.wallefy.model.UserInfo
 
 class UserViewModel: ViewModel() {
-    private var _userLogin = MutableLiveData<HashMap<String, Any>>()
-    val userLogin: LiveData<HashMap<String, Any>> get() = _userLogin
+    private val _userLogin = MutableLiveData<HashMap<String, Any?>>()
+    val userLogin: LiveData<HashMap<String, Any?>> get() = _userLogin
+    var userAuthData: HashMap<String, Any?>? = null
+
+    private val _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean> get() = _loading
 
     val db = FirebaseFirestore.getInstance()
     val auth = FirebaseAuth.getInstance()
@@ -30,51 +31,50 @@ class UserViewModel: ViewModel() {
     val crScope = CoroutineScope(vm + Dispatchers.Main)
 
     init {
+        _loading.value = true
         db.firestoreSettings = settings
-        val default: HashMap<String, Any> = hashMapOf("username" to "-", "status" to "-")
-        _userLogin.value = default
-        initData()
+        migrateData()
     }
 
-    fun initData() {
+    fun migrateData() {
         crScope.launch {
-            Log.i("userlogin", auth.currentUser?.email.toString())
-            var user: HashMap<String, Any> = hashMapOf("username" to auth.currentUser?.displayName.toString(), "status" to auth.currentUser?.email.toString(), "photoUrl" to auth.currentUser?.photoUrl.toString())
             try {
-//                user = getDataUser()
+                userAuthData = hashMapOf("username" to null, "displayName" to auth.currentUser?.displayName.toString(), "status" to null, "email" to auth.currentUser?.email.toString(), "photoUrl" to auth.currentUser?.photoUrl.toString())
+                _userLogin.value = userAuthData
+                userAuthData = getUserLogin()
             }catch (e: Throwable) {
 
             }finally {
-                _userLogin.value = user
+                _userLogin.value = userAuthData
             }
         }
     }
 
-    suspend fun getDataUser(): HashMap<String, Any> {
-        val docRef = db.collection("users").document("vO6eviH0cluMuIDg5jre")
-        val user = docRef.get().await()
-        val data = user.toObject(UserInfo::class.java) ?: Info()
-//        Log.d("tes", data.toString())
+    suspend fun getUserLogin(): HashMap<String, Any?> {
+        val uid = auth.currentUser?.uid.toString()
+        val docRef = db.collection("users").document(uid)
+        var doc = docRef.get().await()
+        try {
+            if (doc.data == null) {
+                userAuthData?.let { docRef.set(it).await() }
+                doc = docRef.get().await()
+            }else {
 
-//        db.collection("users").document("vO6eviH0cluMuIDg5jre")
-//        .addSnapshotListener(MetadataChanges.INCLUDE) { querySnapshot, e ->
-//            if (e != null) {
-//                Log.w("tes", "Listen error", e)
-//                return@addSnapshotListener
-//            }
-//
-//            if (querySnapshot != null) {
-//                Log.d("tes", querySnapshot.data.toString())
-//            }
-//
-//            val source = if (querySnapshot?.metadata?.isFromCache!!)
-//                "local cache"
-//            else
-//                "server"
-//            Log.d("tes", "Data fetched from $source")
-//        }
+            }
+        }catch (e: Throwable) {
 
-        return hashMapOf("username" to user.data?.get("username").toString(), "status" to user.data?.get("status").toString())
+        }finally {
+//            val data = doc.toObject(UserInfo::class.java) ?: Info()
+//            Log.d("tes", data.toString())
+            _loading.value = false
+        }
+
+        return hashMapOf("username" to doc.data?.get("username").toString(),
+                        "displayName" to doc.data?.get("displayName").toString(),
+                        "status" to doc.data?.get("status").toString(),
+                        "email" to doc.data?.get("email").toString(),
+                        "status" to doc.data?.get("status").toString(),
+                        "photoUrl" to doc.data?.get("photoUrl").toString())
     }
 
     override fun onCleared() {

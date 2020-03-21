@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.transactions_item.view.*
 import org.hz240.wallefy.R
 
-class TransactionsAdapter(private val myDataset: ArrayList<HashMap<String, Any>>) :
+class TransactionsAdapter(private val myDataset: ArrayList<HashMap<String, Any?>>) :
     RecyclerView.Adapter<TransactionsAdapter.MyViewHolder>() {
 
     // Provide a reference to the views for each data item
@@ -34,8 +34,9 @@ class TransactionsAdapter(private val myDataset: ArrayList<HashMap<String, Any>>
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.view.tv_title.text = myDataset[position].get("title").toString()
-        holder.view.tv_biaya.text = myDataset[position].get("biaya").toString()
-        holder.view.tv_description.text = myDataset[position].get("description").toString()
+        holder.view.tv_biaya.text = "Rp. "+myDataset[position].get("biaya").toString()
+        holder.view.tv_time.text = myDataset[position].get("time").toString()
+        holder.view.tv_type.text = myDataset[position].get("type").toString()
     }
 
     // Return the size of your dataset (invoked by the layout manager)

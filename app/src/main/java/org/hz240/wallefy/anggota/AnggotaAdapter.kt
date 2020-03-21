@@ -1,9 +1,10 @@
-package org.hz240.wallefy.anggota
+package org.hz240.wallefy.detailCommunity.anggota
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.people_item.view.*
 import org.hz240.wallefy.R
 
@@ -27,12 +28,14 @@ class AnggotaAdapter(private val myDataset: ArrayList<HashMap<String, Any>>) :
         return MyViewHolder(people_item)
     }
 
+    val picasso = Picasso.get()
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.people.tv_username.text = myDataset[position].get("username").toString()
-        holder.people.tv_status.text = myDataset[position].get("status").toString()
+        holder.people.tv_username.text = myDataset[position].get("displayName").toString()
+        holder.people.tv_status.text = myDataset[position].get("email").toString()
+        picasso.load(myDataset[position].get("photoUrl").toString()).placeholder(R.drawable.ic_sync_black_24dp).error(R.drawable.ic_person_white_24dp).into(holder.people.iv_user_image)
     }
 
     // Return the size of your dataset (invoked by the layout manager)

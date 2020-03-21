@@ -11,21 +11,21 @@ class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: SettingsActivityBinding
 
-    override fun finish() {
-        super.finish()
-        overridePendingTransition(
-            R.anim.enter_from_right,
-            R.anim.exit_to_left
-        );
-    }
-
-    override fun startActivity(intent: Intent?) {
-        super.startActivity(intent)
-        overridePendingTransition(
-            R.anim.enter_from_left,
-            R.anim.exit_to_right
-        );
-    }
+//    override fun finish() {
+//        super.finish()
+//        overridePendingTransition(
+//            R.anim.enter_from_right,
+//            R.anim.exit_to_left
+//        );
+//    }
+//
+//    override fun startActivity(intent: Intent?) {
+//        super.startActivity(intent)
+//        overridePendingTransition(
+//            R.anim.enter_from_left,
+//            R.anim.exit_to_right
+//        );
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
