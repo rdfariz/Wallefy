@@ -27,8 +27,8 @@ class joinCommunityFragment : Fragment() {
     private lateinit var binding: FragmentJoinCommunityBinding
     private lateinit var communityListVM: CommunityListViewModel
 
-    val vm = Job()
-    val crScope = CoroutineScope(vm + Dispatchers.Main)
+    private val vm = Job()
+    private val crScope = CoroutineScope(vm + Dispatchers.Main)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
