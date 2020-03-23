@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -15,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.*
 import org.hz240.wallefy.R
 import org.hz240.wallefy.communityList.CommunityListActivity
 import org.hz240.wallefy.communityList.CommunityListViewModel
@@ -40,6 +42,9 @@ class pengeluaranFragment : Fragment() {
         override fun <T : ViewModel> create(aClass: Class<T>):T = f() as T
     }
 
+    private val vm = Job()
+    private val crScope = CoroutineScope(vm + Dispatchers.Main)
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,19 +67,45 @@ class pengeluaranFragment : Fragment() {
         viewManager = LinearLayoutManager(context)
 
         communityListVM.communitySingle.observe(viewLifecycleOwner, Observer {
-            viewAdapter = TransactionsAdapter(it["pengeluaran"] as ArrayList<HashMap<String, Any?>>)
+            val pengeluaran = it!!["pengeluaran"] as ArrayList<HashMap<String, Any?>>
+            if (pengeluaran.size == 0) {
+                binding.rvPengeluaran.visibility = View.INVISIBLE
+                binding.emptyView.visibility = View.VISIBLE
+            }else {
+                binding.emptyView.visibility = View.INVISIBLE
+                binding.rvPengeluaran.visibility = View.VISIBLE
+            }
+            viewAdapter = TransactionsAdapter(pengeluaran)
             recyclerView = binding.rvPengeluaran.apply {
                 layoutManager = viewManager
                 adapter = viewAdapter
             }
         })
+        communityListVM.loadingRefresh.observe(viewLifecycleOwner, Observer {
+            binding.itemsswipetorefresh.isRefreshing = it
+        })
 
+        binding.itemsswipetorefresh.setColorSchemeResources(R.color.colorPrimary)
         binding.itemsswipetorefresh.setOnRefreshListener {
-            communityListVM.refresh()
-            binding.itemsswipetorefresh.isRefreshing = false
+            refresh()
         }
 
         return binding.root
+    }
+
+    private fun refresh() {
+        crScope.launch {
+            val newData = communityListVM.refresh()
+//              Check IfMember
+            if (!newData) {
+                Toast.makeText(context, "Anda tidak terdaftar dikomunitas terkait", Toast.LENGTH_SHORT).show()
+                activity?.let{
+                    val intent = Intent (it, CommunityListActivity::class.java)
+                    intent.flags =  Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    it.startActivity(intent)
+                }
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -87,6 +118,11 @@ class pengeluaranFragment : Fragment() {
 
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        crScope.cancel()
     }
 
 }

@@ -22,9 +22,11 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.*
 import org.hz240.wallefy.R
 import org.hz240.wallefy.communityList.CommunityListActivity
 import org.hz240.wallefy.communityList.CommunityListViewModel
+import org.hz240.wallefy.data.CommunityObj
 import org.hz240.wallefy.databinding.FragmentDashboardBinding
 import java.lang.Exception
 
@@ -38,7 +40,6 @@ class dashboardFragment : Fragment() {
     private lateinit var viewManager: RecyclerView.LayoutManager
 
     private lateinit var binding: FragmentDashboardBinding
-    private lateinit var transactionsVM: TransactionsViewModel
     private lateinit var communityListVM: CommunityListViewModel
     private lateinit var userLoginVM: UserViewModel
     private lateinit var sharedPref : SharedPreferences
@@ -48,7 +49,8 @@ class dashboardFragment : Fragment() {
         override fun <T : ViewModel> create(aClass: Class<T>):T = f() as T
     }
 
-//    private var idCommunity: String?
+    private val vm = Job()
+    private val crScope = CoroutineScope(vm + Dispatchers.Main)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,7 +71,6 @@ class dashboardFragment : Fragment() {
         binding.setLifecycleOwner(this)
         binding.rvLatestTransactions.setNestedScrollingEnabled(false)
 
-        transactionsVM = ViewModelProviders.of(this, viewModelFactory { TransactionsViewModel(idCommunity.toString()) }).get(TransactionsViewModel::class.java)
         communityListVM = ViewModelProviders.of(this, viewModelFactory { CommunityListViewModel(idCommunity.toString()) }).get(CommunityListViewModel::class.java)
         userLoginVM = ViewModelProviders.of(this).get(UserViewModel::class.java)
         binding.dataUsersViewModel = userLoginVM
@@ -78,10 +79,16 @@ class dashboardFragment : Fragment() {
         viewManager = LinearLayoutManager(context)
 
         communityListVM.communitySingle.observe(viewLifecycleOwner, Observer {
-            binding.tvMoneyTotal.text = "Rp. ${it["saldo"].toString()}"
-            binding.tvBalanceLatestUpdate.text = "Latest Update: ${it["latestUpdated"].toString()}"
-
-            val latestTransactions = it["latestTransactions"] as ArrayList<HashMap<String, Any?>>
+            val latestTransactions = it!!["latestTransactions"] as ArrayList<HashMap<String, Any?>>
+            if (latestTransactions.size == 0) {
+                binding.latestTransactionsSection.visibility = View.INVISIBLE
+                binding.emptyView.visibility = View.VISIBLE
+            }else {
+                binding.emptyView.visibility = View.INVISIBLE
+                binding.latestTransactionsSection.visibility = View.VISIBLE
+            }
+            binding.tvMoneyTotal.text = "Rp. ${it!!["saldo"].toString()}"
+            binding.tvBalanceLatestUpdate.text = "Latest Update: ${it!!["latestUpdated"].toString()}"
 
             latestTransactions?.let {
                 viewAdapter = TransactionsAdapter(latestTransactions)
@@ -91,22 +98,15 @@ class dashboardFragment : Fragment() {
                 }
             }
         })
-
-//      Recycleview Transactions
-//        transactionsVM.transactions.observe(viewLifecycleOwner, Observer {
-//            viewManager = LinearLayoutManager(context)
-//            viewAdapter = TransactionsAdapter(it)
-//            recyclerView = binding.rvLatestTransactions.apply {
-//                layoutManager = viewManager
-//                adapter = viewAdapter
-//            }
-//        })
+        communityListVM.loadingRefresh.observe(viewLifecycleOwner, Observer {
+            binding.itemsswipetorefresh.isRefreshing = it
+        })
 
 //      Sync Photo
         val picasso = Picasso.get()
         userLoginVM.userLogin.observe(viewLifecycleOwner, Observer {
-            var photoUrl = it.get("photoUrl").toString()
-            picasso.load(photoUrl).placeholder(R.drawable.ic_sync_black_24dp).error(R.drawable.ic_person_white_24dp).into(binding.ivUserImage)
+            var photoUrl = it?.get("photoUrl").toString()
+            picasso.load(photoUrl).placeholder(R.drawable.ic_person_white_24dp).error(R.drawable.ic_person_white_24dp).into(binding.ivUserImage)
         })
 
         binding.btnSetting.setOnClickListener {view: View ->
@@ -117,13 +117,32 @@ class dashboardFragment : Fragment() {
             }
         }
 
+        binding.itemsswipetorefresh.setColorSchemeResources(R.color.colorPrimary)
         binding.itemsswipetorefresh.setOnRefreshListener {
-            communityListVM.refresh()
-            binding.itemsswipetorefresh.isRefreshing = false
+            refresh()
         }
 
         return binding.root
     }
 
+    private fun refresh() {
+        crScope.launch {
+            val newData = communityListVM.refresh()
+//              Check IfMember
+            if (!newData) {
+                Toast.makeText(context, "Anda tidak terdaftar dikomunitas terkait", Toast.LENGTH_SHORT).show()
+                activity?.let{
+                    val intent = Intent (it, CommunityListActivity::class.java)
+                    intent.flags =  Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    it.startActivity(intent)
+                }
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        crScope.cancel()
+    }
 
 }

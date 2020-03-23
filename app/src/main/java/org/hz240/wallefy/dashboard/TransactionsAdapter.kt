@@ -3,8 +3,9 @@ package org.hz240.wallefy.dashboard
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.transactions_item.view.*
+import kotlinx.android.synthetic.main.item_transactions.view.*
 import org.hz240.wallefy.R
 
 class TransactionsAdapter(private val myDataset: ArrayList<HashMap<String, Any?>>) :
@@ -22,7 +23,7 @@ class TransactionsAdapter(private val myDataset: ArrayList<HashMap<String, Any?>
                                     viewType: Int): MyViewHolder {
         // create a new view
         val people_item = LayoutInflater.from(parent.context)
-            .inflate(R.layout.transactions_item, parent, false)
+            .inflate(R.layout.item_transactions, parent, false)
         // set the view's size, margins, paddings and layout parameters
         return MyViewHolder(
             people_item
@@ -33,10 +34,19 @@ class TransactionsAdapter(private val myDataset: ArrayList<HashMap<String, Any?>
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
+        if (myDataset[position].get("type").toString() == "pengeluaran") {
+            holder.view.tv_type.setTextColor(ContextCompat.getColor(holder.view.context, R.color.red))
+            holder.view.tv_biaya.setTextColor(ContextCompat.getColor(holder.view.context, R.color.red))
+            holder.view.tv_biaya.text = "- Rp. "+myDataset[position].get("biaya").toString()
+        }else {
+            holder.view.tv_type.setTextColor(ContextCompat.getColor(holder.view.context, R.color.green))
+            holder.view.tv_biaya.setTextColor(ContextCompat.getColor(holder.view.context, R.color.green))
+            holder.view.tv_biaya.text = "+ Rp. "+myDataset[position].get("biaya").toString()
+        }
+
         holder.view.tv_title.text = myDataset[position].get("title").toString()
-        holder.view.tv_biaya.text = "Rp. "+myDataset[position].get("biaya").toString()
         holder.view.tv_time.text = myDataset[position].get("time").toString()
-        holder.view.tv_type.text = myDataset[position].get("type").toString()
+        holder.view.tv_type.text = myDataset[position].get("type").toString().capitalize()
     }
 
     // Return the size of your dataset (invoked by the layout manager)

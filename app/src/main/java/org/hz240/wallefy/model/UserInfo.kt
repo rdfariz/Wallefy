@@ -1,9 +1,9 @@
 package org.hz240.wallefy.model
 
 data class UserInfo(
-    var username: String? = null,
-    var displayName: String? = null,
-    var email: String? = null,
-    var status: String? = null,
-    var photoUrl: String? = null
+    val username: String? = null,
+    val displayName: String? = null,
+    val email: String? = null,
+    val status: String? = null,
+    val photoUrl: String? = null
 )

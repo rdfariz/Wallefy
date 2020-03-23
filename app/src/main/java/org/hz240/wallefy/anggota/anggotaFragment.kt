@@ -5,9 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.*
-import androidx.appcompat.widget.SearchView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -16,10 +15,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.hz240.wallefy.MainActivity
+import kotlinx.coroutines.*
 import org.hz240.wallefy.R
 import org.hz240.wallefy.communityList.CommunityListActivity
 import org.hz240.wallefy.communityList.CommunityListViewModel
+import org.hz240.wallefy.dashboard.TransactionsAdapter
 import org.hz240.wallefy.databinding.FragmentAnggotaBinding
 
 /**
@@ -48,6 +48,9 @@ class anggotaFragment : Fragment() {
         }
     }
 
+    private val vm = Job()
+    private val crScope = CoroutineScope(vm + Dispatchers.Main)
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -70,19 +73,45 @@ class anggotaFragment : Fragment() {
         viewManager = LinearLayoutManager(context)
 
         communityListVM.communitySingle.observe(viewLifecycleOwner, Observer {
-            viewAdapter = AnggotaAdapter(it["members"] as ArrayList<HashMap<String, Any>>)
+            val anggota = it!!["members"] as ArrayList<HashMap<String, Any?>>
+            if (anggota.size == 0) {
+                binding.rvAnggota.visibility = View.INVISIBLE
+                binding.emptyView.visibility = View.VISIBLE
+            }else {
+                binding.emptyView.visibility = View.INVISIBLE
+                binding.rvAnggota.visibility = View.VISIBLE
+            }
+            viewAdapter = AnggotaAdapter(anggota)
             recyclerView = binding.rvAnggota.apply {
                 layoutManager = viewManager
                 adapter = viewAdapter
             }
         })
+        communityListVM.loadingRefresh.observe(viewLifecycleOwner, Observer {
+            binding.itemsswipetorefresh.isRefreshing = it
+        })
 
+        binding.itemsswipetorefresh.setColorSchemeResources(R.color.colorPrimary)
         binding.itemsswipetorefresh.setOnRefreshListener {
-            communityListVM.refresh()
-            binding.itemsswipetorefresh.isRefreshing = false
+            refresh()
         }
 
         return binding.root
+    }
+
+    private fun refresh() {
+        crScope.launch {
+            val newData = communityListVM.refresh()
+//              Check IfMember
+            if (!newData) {
+                Toast.makeText(context, "Anda tidak terdaftar dikomunitas terkait", Toast.LENGTH_SHORT).show()
+                activity?.let{
+                    val intent = Intent (it, CommunityListActivity::class.java)
+                    intent.flags =  Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    it.startActivity(intent)
+                }
+            }
+        }
     }
 
 
@@ -113,6 +142,11 @@ class anggotaFragment : Fragment() {
 
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        crScope.cancel()
     }
 
 }

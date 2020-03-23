@@ -12,9 +12,9 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_community_list.view.*
-import kotlinx.android.synthetic.main.transactions_item.view.*
-import kotlinx.android.synthetic.main.transactions_item.view.tv_biaya
-import kotlinx.android.synthetic.main.transactions_item.view.tv_title
+import kotlinx.android.synthetic.main.item_transactions.view.*
+import kotlinx.android.synthetic.main.item_transactions.view.tv_biaya
+import kotlinx.android.synthetic.main.item_transactions.view.tv_title
 import org.hz240.wallefy.MainActivity
 import org.hz240.wallefy.R
 

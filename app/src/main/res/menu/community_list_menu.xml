@@ -7,9 +7,8 @@
         app:showAsAction="always"
         android:icon="@drawable/ic_add_white_24dp"
     />
-    <item android:title="Refresh" />
     <item
         android:id="@+id/to_logout"
-        android:title="Logout"
+        android:title="Log Out"
     />
 </menu>

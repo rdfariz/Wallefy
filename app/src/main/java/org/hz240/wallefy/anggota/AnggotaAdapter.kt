@@ -5,10 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.people_item.view.*
+import kotlinx.android.synthetic.main.item_people.view.*
 import org.hz240.wallefy.R
 
-class AnggotaAdapter(private val myDataset: ArrayList<HashMap<String, Any>>) :
+class AnggotaAdapter(private val myDataset: ArrayList<HashMap<String, Any?>>) :
     RecyclerView.Adapter<AnggotaAdapter.MyViewHolder>() {
 
     // Provide a reference to the views for each data item
@@ -23,7 +23,7 @@ class AnggotaAdapter(private val myDataset: ArrayList<HashMap<String, Any>>) :
                                     viewType: Int): MyViewHolder {
         // create a new view
         val people_item = LayoutInflater.from(parent.context)
-            .inflate(R.layout.people_item, parent, false)
+            .inflate(R.layout.item_people, parent, false)
         // set the view's size, margins, paddings and layout parameters
         return MyViewHolder(people_item)
     }

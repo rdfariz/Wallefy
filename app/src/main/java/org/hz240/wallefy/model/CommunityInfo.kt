@@ -1,9 +1,9 @@
 package org.hz240.wallefy.model
 
 data class CommunityInfo(
-    var idCommunity: String? = null,
-    var displayName: String? = null,
-//    var admin: ArrayList<String>? = null,
-//    var members: ArrayList<String>? = null,
-    var saldo: Int? = null
+    val idCommunity: String? = null,
+    val displayName: String? = null,
+    val admin: ArrayList<HashMap<String, Any?>>? = null,
+    val members: ArrayList<HashMap<String, Any?>>? = null,
+    val saldo: Int? = null
 )

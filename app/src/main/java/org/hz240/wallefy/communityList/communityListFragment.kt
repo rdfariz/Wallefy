@@ -1,8 +1,9 @@
 package org.hz240.wallefy.communityList
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
@@ -11,13 +12,12 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.FirebaseAuth
-import com.squareup.picasso.Picasso
+import kotlinx.coroutines.*
+import org.hz240.wallefy.data.AuthUserObj
 import org.hz240.wallefy.R
-import org.hz240.wallefy.dashboard.UserViewModel
+import org.hz240.wallefy.data.CommunityObj
 import org.hz240.wallefy.databinding.FragmentCommunityListBinding
 import org.hz240.wallefy.login.LoginActivity
-import java.lang.Exception
 
 /**
  * A simple [Fragment] subclass.
@@ -30,7 +30,13 @@ class communityListFragment : Fragment() {
 
     private lateinit var binding: FragmentCommunityListBinding
     private lateinit var communityListVM: CommunityListViewModel
-    private lateinit var userLoginVM: UserViewModel
+
+    private val vm = Job()
+    private val crScope = CoroutineScope(vm + Dispatchers.Main)
+
+    init {
+        CommunityObj.reset(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,22 +46,18 @@ class communityListFragment : Fragment() {
 //      Init Binding
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_community_list, container, false)
         binding.setLifecycleOwner(this)
-        userLoginVM = ViewModelProviders.of(this).get(UserViewModel::class.java)
         communityListVM = ViewModelProviders.of(this).get(CommunityListViewModel::class.java)
 
-        binding.dataUsersViewModel = userLoginVM
         binding.dataCommunityViewModel = communityListVM
 
 //      Recycleview Community List
         viewManager = LinearLayoutManager(context)
         communityListVM.communityList.observe(viewLifecycleOwner, Observer {
-            Log.i("tesItem", it.toString())
-            Log.i("tesLength", (it.size == 0).toString())
             if (it.size == 0) {
-                binding.rvCommunityList.visibility = View.INVISIBLE
+                binding.rvCommunityList.visibility = View.GONE
                 binding.emptyView.visibility = View.VISIBLE
             }else {
-                binding.emptyView.visibility = View.INVISIBLE
+                binding.emptyView.visibility = View.GONE
                 binding.rvCommunityList.visibility = View.VISIBLE
             }
             viewAdapter = CommunityListAdapter(it)
@@ -64,10 +66,15 @@ class communityListFragment : Fragment() {
                 adapter = viewAdapter
             }
         })
+        communityListVM.loadingRefresh.observe(viewLifecycleOwner, Observer {
+            binding.itemsswipetorefresh.isRefreshing = it
+        })
 
+        binding.itemsswipetorefresh.setColorSchemeResources(R.color.colorPrimary)
         binding.itemsswipetorefresh.setOnRefreshListener {
-            communityListVM.refresh()
-            binding.itemsswipetorefresh.isRefreshing = false
+            crScope.launch {
+                communityListVM.refresh()
+            }
         }
 
         return binding.root
@@ -76,22 +83,36 @@ class communityListFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.community_list_menu,menu)
-
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             R.id.to_joinCommunity -> view?.findNavController()?.navigate(R.id.action_communityListFragment_to_joinCommunityFragment)
-            R.id.to_logout -> logout()
+            R.id.to_logout -> crScope.launch { signout() }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun logout() {
-        FirebaseAuth.getInstance().signOut()
-        activity?.let{
-            val intent = Intent (it, LoginActivity::class.java)
-            it.startActivity(intent)
+    private suspend fun signout() {
+        val alertDialogBuilder = AlertDialog.Builder(context)
+        alertDialogBuilder.setTitle("Keluar Akun")
+        alertDialogBuilder.setMessage("Anda yakin ingin keluar dari akun ini?")
+        alertDialogBuilder.setPositiveButton("Keluar") { dialogInterface: DialogInterface, i: Int ->
+            AuthUserObj.toSignOut()
+            activity?.let{
+                val intent = Intent (it, LoginActivity::class.java)
+                intent.flags =  Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                it.startActivity(intent)
+            }
         }
+        alertDialogBuilder.setNegativeButton("Batal") { dialogInterface: DialogInterface, i: Int ->
+
+        }
+        alertDialogBuilder.show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        crScope.cancel()
     }
 
 }

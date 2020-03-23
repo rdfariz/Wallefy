@@ -100,14 +100,12 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <!--                <Button-->
-                    <!--                    android:layout_width="wrap_content"-->
-                    <!--                    android:layout_height="wrap_content"-->
-                    <!--                    android:onClick="@{()->dataUsersViewModel.changeName()}"-->
-                    <!--                    android:text="Change name"-->
-                    <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-                    <!--                    app:layout_constraintEnd_toStartOf="@+id/btn_setting"-->
-                    <!--                    app:layout_constraintTop_toTopOf="parent"></Button>-->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:toggleLoading="@{dataCommunityViewModel.loading}"
+                        tools:layout_editor_absoluteY="38dp"></androidx.constraintlayout.widget.ConstraintLayout>
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -122,12 +120,6 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/profileSection">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        app:toggleLoading="@{dataCommunityViewModel.loading}"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <TextView
                         android:id="@+id/tv_title_total"
@@ -148,7 +140,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Rp. 0"
+                        android:text="Rp. -"
                         android:textColor="@color/green"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -172,7 +164,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Last Update: March 20-2020 2:45 PM"
+                        android:text="Last Update: -"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/tv_money_total"
@@ -180,37 +172,79 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <TextView
-                    app:toggleLoading="@{dataCommunityViewModel.loading}"
-                    android:id="@+id/titleSection"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/empty_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="32dp"
-                    android:text="Latest Transactions"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="@+id/constraintLayout"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout"></TextView>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    app:toggleLoading="@{dataCommunityViewModel.loading}"
-                    android:id="@+id/rv_latest_transactions"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:nestedScrollingEnabled="false"
-                    android:scrollbars="vertical"
+                    android:paddingTop="32dp"
+                    android:paddingBottom="32dp"
+                    android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/titleSection"
-                    tools:itemCount="1"
-                    tools:listitem="@layout/transactions_item" />
+                    app:layout_constraintTop_toBottomOf="@+id/background_curve">
+
+                    <ImageView
+                        android:id="@+id/imageView2"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:src="@drawable/ic_undraw_no_data_qbuo"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.497"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"></ImageView>
+
+                    <TextView
+                        android:id="@+id/tv_empty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="Belum ada data transaksi"
+                        android:visibility="visible"
+                        app:layout_constraintEnd_toEndOf="@+id/imageView2"
+                        app:layout_constraintStart_toStartOf="@+id/imageView2"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/latestTransactionsSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    app:layout_constraintStart_toStartOf="@+id/constraintLayout"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+                    <TextView
+                        android:id="@+id/titleSection"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:text="Latest Transactions"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:toggleLoading="@{dataCommunityViewModel.loading}"></TextView>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_latest_transactions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:nestedScrollingEnabled="false"
+                        android:scrollbars="vertical"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/titleSection"
+                        app:toggleLoading="@{dataCommunityViewModel.loading}"
+                        tools:itemCount="1"
+                        tools:listitem="@layout/item_transactions" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
-                    app:layout_constraintTop_toBottomOf="@+id/rv_latest_transactions" />
+                    app:layout_constraintTop_toBottomOf="@+id/latestTransactionsSection" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

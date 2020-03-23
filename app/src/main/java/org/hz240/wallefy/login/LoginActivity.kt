@@ -22,65 +22,9 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
 
-    // Configure Google Sign In
-    private val RC_SIGN_IN: Int = 1
-    private lateinit var mGoogleSignInClient: GoogleSignInClient
-    private lateinit var mGoogleSignInOptions: GoogleSignInOptions
-    private lateinit var firebaseAuth: FirebaseAuth
-
-    init {
-        firebaseAuth = FirebaseAuth.getInstance()
-    }
-
-    private fun configureGoogleSignIn() {
-        mGoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        mGoogleSignInClient = GoogleSignIn.getClient(this, mGoogleSignInOptions)
-    }
-    private fun signIn() {
-        mGoogleSignInClient.signOut()
-        firebaseAuth.signOut()
-        val signInIntent: Intent = mGoogleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
-    }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_SIGN_IN) {
-            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                val account = task.getResult(ApiException::class.java)
-                if (account != null) {
-                    firebaseAuthWithGoogle(account)
-                }
-            } catch (e: ApiException) {
-                Toast.makeText(this, "Google sign in failed:(", Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
-    private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
-        val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
-        firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
-            if (it.isSuccessful) {
-                Toast.makeText(this, "Login sebagai ${firebaseAuth.currentUser?.displayName.toString()}", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, CommunityListActivity::class.java)
-                startActivity(intent)
-            } else {
-                Toast.makeText(this, "Google sign in failed:(", Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        configureGoogleSignIn()
-        binding = DataBindingUtil.setContentView(this,
-            R.layout.activity_login
-        )
-        binding.login.setOnClickListener {
-            signIn()
-        }
+
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
     }
 }

@@ -5,6 +5,7 @@ xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable name="dataUsersViewModel" type="org.hz240.wallefy.dashboard.UserViewModel" />
+        <variable name="dataCommunityViewModel" type="org.hz240.wallefy.communityList.CommunityListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,6 +13,18 @@ xmlns:tools="http://schemas.android.com/tools">
         android:layout_height="match_parent"
         android:background="#FFFFFF"
         tools:context=".pengaturan.pengaturanFragment">
+
+        <ProgressBar
+            android:id="@+id/progressBar2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/gray_custom"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent"
+            app:toggleLoading="@{dataCommunityViewModel.loading}"></ProgressBar>
 
         <ScrollView
             android:id="@+id/scrollView2"
@@ -84,9 +97,9 @@ xmlns:tools="http://schemas.android.com/tools">
 
                 <ImageView
                     android:id="@+id/iv_user_image"
-                    android:layout_width="125dp"
-                    android:layout_height="125dp"
-                    android:layout_marginTop="40dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="32dp"
                     android:src="@drawable/ic_person_white_24dp"
                     app:layout_constraintEnd_toEndOf="@+id/linearLayout"
                     app:layout_constraintHorizontal_bias="0.481"
@@ -104,7 +117,10 @@ xmlns:tools="http://schemas.android.com/tools">
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="16dp"
-                        android:background="@drawable/bg_border_bottom"
+                        android:layout_marginTop="32dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
@@ -138,7 +154,9 @@ xmlns:tools="http://schemas.android.com/tools">
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:background="@drawable/bg_border_bottom"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground"
                         android:padding="16dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -173,7 +191,9 @@ xmlns:tools="http://schemas.android.com/tools">
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:background="@drawable/bg_border_bottom"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground"
                         android:padding="16dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -208,8 +228,12 @@ xmlns:tools="http://schemas.android.com/tools">
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:background="@drawable/bg_border_bottom"
+                        android:layout_marginBottom="16dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:padding="16dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/to_out_community">
@@ -230,7 +254,7 @@ xmlns:tools="http://schemas.android.com/tools">
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginLeft="16dp"
-                            android:text="Sign out"
+                            android:text="Log Out"
                             android:textSize="16sp"
                             app:layout_constraintBottom_toBottomOf="@+id/icon_signout"
                             app:layout_constraintStart_toEndOf="@+id/icon_signout"
