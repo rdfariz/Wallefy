@@ -5,16 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.*
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
@@ -46,6 +43,15 @@ class pemasukanFragment : Fragment() {
     private val vm = Job()
     private val crScope = CoroutineScope(vm + Dispatchers.Main)
 
+    private var menuDynamic = R.menu.anggota_menu
+    private val isAdmin = MutableLiveData<Boolean>()
+
+    override fun onResume() {
+        super.onResume()
+        if (arguments?.getBoolean("onRefresh") == true) {
+            refresh()
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -67,8 +73,20 @@ class pemasukanFragment : Fragment() {
         binding.dataCommunityViewModel = communityListVM
         viewManager = LinearLayoutManager(context)
 
+        communityListVM.error.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                binding.errView.visibility = View.VISIBLE
+                binding.emptyView.visibility = View.INVISIBLE
+                binding.rvPemasukan.visibility = View.INVISIBLE
+                refresh()
+            }else {
+                binding.errView.visibility = View.INVISIBLE
+                binding.rvPemasukan.visibility = View.VISIBLE
+            }
+        })
         communityListVM.communitySingle.observe(viewLifecycleOwner, Observer {
             val pemasukan = it!!["pemasukan"] as ArrayList<HashMap<String, Any?>>
+            isAdmin.value = it!!["isAdmin"] as Boolean?
             if (pemasukan.size == 0) {
                 binding.rvPemasukan.visibility = View.INVISIBLE
                 binding.emptyView.visibility = View.VISIBLE
@@ -112,12 +130,21 @@ class pemasukanFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.pemasukan_menu,menu)
+//        isAdmin.observe(viewLifecycleOwner, Observer {
+//            if (it == true) {
+//                Log.i("tesAdmimn", true.toString())
+//                menuDynamic = R.menu.pemasukan_menu
+//                inflater.inflate(menuDynamic,menu)
+//            }else {
+//                inflater.inflate(menuDynamic,menu)
+//                Log.i("tesAdmimn", false.toString())
+//            }
+//        })
 
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
-
+            R.id.to_add_pemasukan -> view?.findNavController()?.navigate(R.id.action_pemasukan_to_tambahPemasukan)
         }
         return super.onOptionsItemSelected(item)
     }

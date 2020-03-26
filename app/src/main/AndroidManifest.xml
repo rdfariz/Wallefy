@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="org.hz240.wallefy">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        tools:ignore="LockedOrientationActivity"
         android:allowBackup="true"
         android:resizeableActivity="false"
         android:icon="@drawable/ic_logo_icon_bg"
@@ -13,9 +15,12 @@
         android:roundIcon="@drawable/ic_logo_icon_bg"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".communityList.CommunityListActivity"></activity>
+        <activity android:name=".communityList.CommunityListActivity"
+            android:screenOrientation="portrait">
+        </activity>
         <activity
             android:name=".SplashActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/HideActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,10 +29,12 @@
         </activity>
         <activity
             android:name=".pengaturan.SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:theme="@style/HideActionBar" />
+            android:screenOrientation="portrait"
+            android:label="Settings"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -37,6 +44,7 @@
         </activity>
         <activity
             android:name=".login.LoginActivity"
+            android:screenOrientation="portrait"
             android:label="Login"
             android:launchMode="singleTask"
         />

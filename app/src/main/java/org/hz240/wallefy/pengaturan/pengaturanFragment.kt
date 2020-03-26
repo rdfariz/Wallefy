@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
 import org.hz240.wallefy.R
@@ -49,6 +50,8 @@ class pengaturanFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        activity?.actionBar?.setTitle("Pengaturan")
+
 //      Get ID from sharedpreferences
         sharedPref = activity?.getSharedPreferences("selectedCommunity", Context.MODE_PRIVATE)!!
         var idCommunity = sharedPref.getString("idCommunity", null)
@@ -66,27 +69,35 @@ class pengaturanFragment : Fragment() {
         binding.dataUsersViewModel = userLoginVM
         binding.dataCommunityViewModel = communityListVM
 
-        val picasso = Picasso.get()
-        userLoginVM.userLogin.observe(viewLifecycleOwner, Observer {
-            Log.i("tes_pngaturan", it.toString())
-            var photoUrl = it?.get("photoUrl").toString()
-            picasso.load(photoUrl).placeholder(R.drawable.ic_sync_black_24dp).error(R.drawable.ic_person_white_24dp).into(binding.ivUserImage)
-            binding.tvEmail.text = it?.get("email").toString()
-            binding.tvUsername.text = it?.get("displayName").toString()
-        })
+//        val picasso = Picasso.get()
+//        userLoginVM.userLogin.observe(viewLifecycleOwner, Observer {
+//            Log.i("tes_pngaturan", it.toString())
+//            var photoUrl = it?.get("photoUrl").toString()
+//            picasso.load(photoUrl).placeholder(R.drawable.ic_sync_black_24dp).error(R.drawable.ic_person_white_24dp).into(binding.ivUserImage)
+//            binding.tvEmail.text = it?.get("email").toString()
+//            binding.tvUsername.text = it?.get("displayName").toString()
+//        })
 
+        binding.toAccountInfo.setOnClickListener {view: View ->
+//            view.findNavController().navigate(R.id.action_pengaturan_to_pengaturanUser2)
+            activity?.let{
+                val intent = Intent (it, SettingsActivity::class.java)
+                it.startActivity(intent)
+            }
+        }
         binding.toSignout.setOnClickListener {view: View ->
             crScope.launch {
                 signout()
             }
         }
-        binding.toOutCommunity.setOnClickListener {
+        binding.toOutCommunity.setOnClickListener {view: View ->
             crScope.launch {
                 outCommunity("Keluar komunitas", "Anda yakin ingin keluar komunitas?", idCommunity.toString())
             }
         }
         return binding.root
     }
+
 
 
     private suspend fun signout() {

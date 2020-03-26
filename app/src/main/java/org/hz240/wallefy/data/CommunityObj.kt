@@ -3,6 +3,7 @@ package org.hz240.wallefy.data
 import android.util.Log
 import com.google.firebase.firestore.*
 import kotlinx.coroutines.tasks.await
+import org.hz240.wallefy.utils.Converter
 import org.hz240.wallefy.utils.FirestoreObj
 import java.text.SimpleDateFormat
 import java.util.*
@@ -129,6 +130,7 @@ object CommunityObj {
         }
     }
 
+
     private suspend fun getCommunityAll(): ArrayList<HashMap<String, Any?>> {
         var myDataset: ArrayList<HashMap<String, Any?>> = ArrayList()
         try {
@@ -137,7 +139,7 @@ object CommunityObj {
             val docRef = db.collection("organisasi").whereArrayContains("members", usrRef).get(FirestoreObj._sourceDynamic).await()
 
             docRef.forEach {
-                myDataset?.add(hashMapOf("idCommunity" to it.id, "displayName" to it.data!!["displayName"], "saldo" to it.data!!["saldo"]))
+                myDataset?.add(hashMapOf("idCommunity" to it.id, "displayName" to it.data!!["displayName"], "saldo" to Converter.rupiah(it.data!!["saldo"])))
             }
             _communityList = myDataset
             sessionAll = myDataset
@@ -153,6 +155,7 @@ object CommunityObj {
         var doc = HashMap<String, Any?>()
         val communityRef = db.collection("organisasi").document(idCommunity)
         val org = communityRef.get(FirestoreObj._sourceDynamic).await()
+        var isAdmin = false
         try {
             val docsActivity = db.collection("organisasi").document(idCommunity).collection("activity")
             val docsPemasukan = docsActivity.whereEqualTo("type", "pemasukan")
@@ -161,8 +164,12 @@ object CommunityObj {
                     .orderBy("time", Query.Direction.DESCENDING).get(FirestoreObj._sourceDynamic).await()
             val docsLatestTransactions = docsActivity.orderBy("time", Query.Direction.DESCENDING).limit(4).get(FirestoreObj._sourceDynamic).await()
             var membersRef = ArrayList<DocumentReference>()
+            var adminRef = ArrayList<DocumentReference>()
             var ltRef = ArrayList<DocumentReference>()
 
+            if (org.data!!["admin"] != null) {
+                adminRef = org.data!!.get("admin") as ArrayList<DocumentReference>
+            }
             if (org.data!!["members"] != null) {
                 membersRef = org.data!!.get("members") as ArrayList<DocumentReference>
             }
@@ -170,6 +177,14 @@ object CommunityObj {
                 ltRef = org.data!!.get("latestTransactions") as ArrayList<DocumentReference>
             }
             val ltRefFix = ltRef.asReversed()
+
+
+    //      Check IF Admin
+            val uid = FirestoreObj._auth.currentUser?.uid.toString()
+            val usrRef = uid?.let { db.collection("users").document(it) }
+            adminRef.forEach {
+                if (it == usrRef) { isAdmin = true }
+            }
 
     //      Members
             var members = ArrayList<HashMap<String, Any?>>()
@@ -182,8 +197,18 @@ object CommunityObj {
                     "status" to member.data!!["status"].toString(),
                     "email" to member.data!!["email"].toString(),
                     "status" to member.data!!["status"].toString(),
-                    "photoUrl" to member.data!!["photoUrl"].toString()
+                    "photoUrl" to member.data!!["photoUrl"].toString(),
+                    "type" to "member"
                 )
+
+                adminRef?.let { arr->
+                    arr.forEach {adminID ->
+                        if (adminID == it) {
+                            data["type"] = "admin"
+                        }
+                    }
+                }
+
                 members.add(data)
             }
             _members = members
@@ -199,7 +224,7 @@ object CommunityObj {
                     val time = it.data!!["time"]
                     date = convertToDate(time as com.google.firebase.Timestamp)
                     title = it.data!!["title"].toString()
-                    biaya = it.data!!["biaya"].toString()
+                    biaya = Converter.rupiah(it.data!!["biaya"])
                     type = it.data!!["type"].toString()
                 }
                 var data: HashMap<String, Any?> = hashMapOf(
@@ -223,7 +248,7 @@ object CommunityObj {
                 if (it.exists()) {
                     title = it.data!!["title"].toString()
                     date = convertToDate(it.data!!["time"] as com.google.firebase.Timestamp)
-                    biaya = it.data!!["biaya"].toString()
+                    biaya = Converter.rupiah(it.data!!["biaya"])
                     type = it.data!!["type"].toString()
                 }
                 var data = hashMapOf<String, Any?>(
@@ -247,7 +272,7 @@ object CommunityObj {
                 if (it.exists()) {
                     title = it.data!!["title"].toString()
                     date = convertToDate(it.data!!["time"] as com.google.firebase.Timestamp)
-                    biaya = it.data!!["biaya"].toString()
+                    biaya = Converter.rupiah(it.data!!["biaya"])
                     type = it.data!!["type"].toString()
                 }
                 var data = hashMapOf<String, Any?>(
@@ -269,7 +294,7 @@ object CommunityObj {
 
             var saldo = "-"
             if(org.data!!["saldo"] != null) {
-                saldo = org.data!!["saldo"].toString()
+                saldo = Converter.rupiah(org.data!!["saldo"])
             }
             var displayName = "-"
             if(org.data!!["displayName"] != null) {
@@ -285,7 +310,8 @@ object CommunityObj {
                 "pemasukan" to _pemasukan,
                 "pengeluaran" to _pengeluaran,
                 "latestTransactions" to _latestTransactions,
-                "latestUpdated" to date
+                "latestUpdated" to date,
+                "isAdmin" to isAdmin
             )
         }catch (e: Exception) {
             Log.i("teserr", e.message.toString())
@@ -293,14 +319,15 @@ object CommunityObj {
                 doc = sessionSingle as HashMap<String, Any?>
             }else {
                 doc = hashMapOf(
-                    "idCommunity" to org.id,
+                    "idCommunity" to null,
                     "displayName" to "-",
                     "saldo" to "-",
                     "members" to ArrayList<HashMap<String, Any>>(),
                     "pemasukan" to ArrayList<HashMap<String, Any>>(),
                     "pengeluaran" to ArrayList<HashMap<String, Any>>(),
                     "latestTransactions" to ArrayList<HashMap<String, Any>>(),
-                    "latestUpdated" to "-"
+                    "latestUpdated" to "-",
+                    "isAdmin" to isAdmin
                 )
             }
         }finally {

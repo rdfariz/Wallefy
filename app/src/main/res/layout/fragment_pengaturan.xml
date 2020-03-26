@@ -14,17 +14,17 @@ xmlns:tools="http://schemas.android.com/tools">
         android:background="#FFFFFF"
         tools:context=".pengaturan.pengaturanFragment">
 
-        <ProgressBar
-            android:id="@+id/progressBar2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminateTint="@color/gray_custom"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="parent"
-            app:toggleLoading="@{dataCommunityViewModel.loading}"></ProgressBar>
+<!--        <ProgressBar-->
+<!--            android:id="@+id/progressBar2"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:indeterminateTint="@color/gray_custom"-->
+<!--            android:visibility="invisible"-->
+<!--            app:layout_constraintBottom_toTopOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="parent"-->
+<!--            app:toggleLoading="@{dataCommunityViewModel.loading}"></ProgressBar>-->
 
         <ScrollView
             android:id="@+id/scrollView2"
@@ -36,88 +36,87 @@ xmlns:tools="http://schemas.android.com/tools">
                 android:layout_height="match_parent"
                 android:background="#ffffff">
 
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="match_parent"
-                    android:layout_height="240dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/background_curve"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"></ImageView>
+<!--                <ImageView-->
+<!--                    android:id="@+id/imageView"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="240dp"-->
+<!--                    android:scaleType="centerCrop"-->
+<!--                    android:src="@drawable/background_curve"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"></ImageView>-->
 
-                <!--        <androidx.constraintlayout.widget.ConstraintLayout-->
-                <!--            android:id="@+id/profileSection"-->
-                <!--            android:layout_width="match_parent"-->
-                <!--            android:layout_height="wrap_content"-->
-                <!--            android:layout_marginHorizontal="24dp"-->
-                <!--            android:layout_marginTop="16dp"-->
-                <!--            app:layout_constraintTop_toTopOf="parent">-->
+<!--                &lt;!&ndash;        <androidx.constraintlayout.widget.ConstraintLayout&ndash;&gt;-->
+<!--                &lt;!&ndash;            android:id="@+id/profileSection"&ndash;&gt;-->
+<!--                &lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+<!--                &lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
+<!--                &lt;!&ndash;            android:layout_marginHorizontal="24dp"&ndash;&gt;-->
+<!--                &lt;!&ndash;            android:layout_marginTop="16dp"&ndash;&gt;-->
+<!--                &lt;!&ndash;            app:layout_constraintTop_toTopOf="parent">&ndash;&gt;-->
 
-                <!--            <Button-->
-                <!--                android:id="@+id/btn_close"-->
-                <!--                android:layout_width="25dp"-->
-                <!--                android:layout_height="25dp"-->
-                <!--                android:layout_gravity="center"-->
-                <!--                android:background="@drawable/mdi_close"-->
-                <!--                android:drawablePadding="5dp"-->
-                <!--                app:layout_constraintBottom_toBottomOf="parent"-->
-                <!--                app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                app:layout_constraintTop_toTopOf="parent" />-->
-                <!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--                &lt;!&ndash;            <Button&ndash;&gt;-->
+<!--                &lt;!&ndash;                android:id="@+id/btn_close"&ndash;&gt;-->
+<!--                &lt;!&ndash;                android:layout_width="25dp"&ndash;&gt;-->
+<!--                &lt;!&ndash;                android:layout_height="25dp"&ndash;&gt;-->
+<!--                &lt;!&ndash;                android:layout_gravity="center"&ndash;&gt;-->
+<!--                &lt;!&ndash;                android:background="@drawable/mdi_close"&ndash;&gt;-->
+<!--                &lt;!&ndash;                android:drawablePadding="5dp"&ndash;&gt;-->
+<!--                &lt;!&ndash;                app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;-->
+<!--                &lt;!&ndash;                app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+<!--                &lt;!&ndash;                app:layout_constraintTop_toTopOf="parent" />&ndash;&gt;-->
+<!--                &lt;!&ndash;        </androidx.constraintlayout.widget.ConstraintLayout>&ndash;&gt;-->
 
-                <LinearLayout
-                    android:id="@+id/linearLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_marginTop="40dp"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/linearLayout"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:gravity="center"-->
+<!--                    android:layout_marginTop="40dp"-->
+<!--                    android:orientation="vertical"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent">-->
 
-                    <TextView
-                        android:id="@+id/tv_username"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{@string/username_print(dataUsersViewModel.userLogin.displayName)}"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="#ffffff"></TextView>
+<!--                    <TextView-->
+<!--                        android:id="@+id/tv_username"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="@{@string/username_print(dataUsersViewModel.userLogin.displayName)}"-->
+<!--                        android:textSize="20sp"-->
+<!--                        android:textStyle="bold"-->
+<!--                        android:textColor="#ffffff"></TextView>-->
 
-                    <TextView
-                        android:id="@+id/tv_email"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{dataUsersViewModel.userLogin.email.toString()}"
-                        android:textSize="16sp"
-                        android:textColor="#ffffff"></TextView>
-                </LinearLayout>
+<!--                    <TextView-->
+<!--                        android:id="@+id/tv_email"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="@{dataUsersViewModel.userLogin.email.toString()}"-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:textColor="#ffffff"></TextView>-->
+<!--                </LinearLayout>-->
 
-                <ImageView
-                    android:id="@+id/iv_user_image"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_marginTop="32dp"
-                    android:src="@drawable/ic_person_white_24dp"
-                    app:layout_constraintEnd_toEndOf="@+id/linearLayout"
-                    app:layout_constraintHorizontal_bias="0.481"
-                    app:layout_constraintStart_toStartOf="@+id/linearLayout"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout"></ImageView>
+<!--                <ImageView-->
+<!--                    android:id="@+id/iv_user_image"-->
+<!--                    android:layout_width="100dp"-->
+<!--                    android:layout_height="100dp"-->
+<!--                    android:layout_marginTop="32dp"-->
+<!--                    android:src="@drawable/ic_person_white_24dp"-->
+<!--                    app:layout_constraintEnd_toEndOf="@+id/linearLayout"-->
+<!--                    app:layout_constraintHorizontal_bias="0.481"-->
+<!--                    app:layout_constraintStart_toStartOf="@+id/linearLayout"-->
+<!--                    app:layout_constraintTop_toBottomOf="@+id/linearLayout"></ImageView>-->
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
                     app:layout_constraintTop_toBottomOf="@+id/iv_user_image">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/to_account_info"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:layout_marginTop="32dp"
+                        android:paddingVertical="16dp"
+                        android:paddingHorizontal="32dp"
                         android:clickable="true"
                         android:focusable="true"
                         android:background="?attr/selectableItemBackground"
@@ -153,11 +152,11 @@ xmlns:tools="http://schemas.android.com/tools">
                         android:id="@+id/to_notification"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
                         android:clickable="true"
                         android:focusable="true"
                         android:background="?attr/selectableItemBackground"
-                        android:padding="16dp"
+                        android:paddingVertical="16dp"
+                        android:paddingHorizontal="32dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/to_account_info">
@@ -190,11 +189,11 @@ xmlns:tools="http://schemas.android.com/tools">
                         android:id="@+id/to_out_community"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
                         android:clickable="true"
                         android:focusable="true"
                         android:background="?attr/selectableItemBackground"
-                        android:padding="16dp"
+                        android:paddingVertical="16dp"
+                        android:paddingHorizontal="32dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/to_notification">
@@ -227,12 +226,12 @@ xmlns:tools="http://schemas.android.com/tools">
                         android:id="@+id/to_signout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
                         android:layout_marginBottom="16dp"
                         android:background="?attr/selectableItemBackground"
                         android:clickable="true"
                         android:focusable="true"
-                        android:padding="16dp"
+                        android:paddingVertical="16dp"
+                        android:paddingHorizontal="32dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

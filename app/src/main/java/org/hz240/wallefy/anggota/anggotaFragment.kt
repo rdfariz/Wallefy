@@ -51,6 +51,13 @@ class anggotaFragment : Fragment() {
     private val vm = Job()
     private val crScope = CoroutineScope(vm + Dispatchers.Main)
 
+    override fun onResume() {
+        super.onResume()
+        if (arguments?.getBoolean("onRefresh") == true) {
+            refresh()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -72,6 +79,17 @@ class anggotaFragment : Fragment() {
         binding.dataCommunityViewModel = communityListVM
         viewManager = LinearLayoutManager(context)
 
+        communityListVM.error.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                binding.errView.visibility = View.VISIBLE
+                binding.emptyView.visibility = View.INVISIBLE
+                binding.rvAnggota.visibility = View.INVISIBLE
+                refresh()
+            }else {
+                binding.errView.visibility = View.INVISIBLE
+                binding.rvAnggota.visibility = View.VISIBLE
+            }
+        })
         communityListVM.communitySingle.observe(viewLifecycleOwner, Observer {
             val anggota = it!!["members"] as ArrayList<HashMap<String, Any?>>
             if (anggota.size == 0) {

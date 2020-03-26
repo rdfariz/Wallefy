@@ -35,6 +35,7 @@ class AnggotaAdapter(private val myDataset: ArrayList<HashMap<String, Any?>>) :
         // - replace the contents of the view with that element
         holder.people.tv_username.text = myDataset[position].get("displayName").toString()
         holder.people.tv_status.text = myDataset[position].get("email").toString()
+        holder.people.status_bayar.text = myDataset[position].get("type").toString()
         picasso.load(myDataset[position].get("photoUrl").toString()).placeholder(R.drawable.ic_sync_black_24dp).error(R.drawable.ic_person_white_24dp).into(holder.people.iv_user_image)
     }
 

@@ -1,12 +1,10 @@
 package org.hz240.wallefy.dashboard
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.hz240.wallefy.data.AuthUserObj
 
 class UserViewModel: ViewModel() {
@@ -33,6 +31,19 @@ class UserViewModel: ViewModel() {
 
         }finally {
             _loading.value = false
+        }
+    }
+
+    suspend fun changeDisplayName(newData: String) {
+        try {
+            _loading.value = true
+            Log.i("tesLoad1", _loading.value.toString())
+            AuthUserObj.setDisplayName(newData)
+        }catch (e: Exception) {
+
+        }finally {
+            _loading.value = false
+            Log.i("tesLoad2", _loading.value.toString())
         }
     }
 

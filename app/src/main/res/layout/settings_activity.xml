@@ -6,12 +6,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity">
+        tools:context=".pengaturan.SettingsActivity">
 
-        <ScrollView
-            android:layout_above="@+id/bottom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
             <fragment
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -21,7 +17,7 @@
                 app:navGraph="@navigation/settings"
                 tools:layout="@layout/fragment_pengaturan">
             </fragment>
-        </ScrollView>
 
     </RelativeLayout>
+
 </layout>

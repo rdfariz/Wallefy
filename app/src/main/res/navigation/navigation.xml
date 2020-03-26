@@ -37,6 +37,9 @@
             app:exitAnim="@anim/exit_to_left"
             app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_dashboard_to_detailTransactionFragment"
+            app:destination="@id/detailTransactionFragment" />
     </fragment>
     <fragment
         android:id="@+id/anggota"
@@ -47,12 +50,34 @@
         android:id="@+id/pemasukan"
         android:name="org.hz240.wallefy.pemasukan.pemasukanFragment"
         android:label="Pemasukan"
-        tools:layout="@layout/fragment_pemasukan" />
+        tools:layout="@layout/fragment_pemasukan" >
+        <action
+            android:id="@+id/action_pemasukan_to_tambahPemasukan"
+            app:destination="@id/tambahPemasukan"
+            app:enterAnim="@anim/anim_slide_in_bottom"
+            app:exitAnim="@anim/anim_slide_out_bottom"
+            app:popEnterAnim="@anim/anim_slide_in_bottom"
+            app:popExitAnim="@anim/anim_slide_out_bottom" />
+        <action
+            android:id="@+id/action_pemasukan_to_detailTransactionFragment"
+            app:destination="@id/detailTransactionFragment" />
+    </fragment>
     <fragment
         android:id="@+id/pengeluaran"
         android:name="org.hz240.wallefy.pengeluaran.pengeluaranFragment"
         android:label="Pengeluaran"
-        tools:layout="@layout/fragment_pengeluaran" />
+        tools:layout="@layout/fragment_pengeluaran" >
+        <action
+            android:id="@+id/action_pengeluaran_to_tambahPengeluaran"
+            app:destination="@id/tambahPengeluaran"
+            app:enterAnim="@anim/anim_slide_in_bottom"
+            app:exitAnim="@anim/anim_slide_out_bottom"
+            app:popEnterAnim="@anim/anim_slide_in_bottom"
+            app:popExitAnim="@anim/anim_slide_out_bottom" />
+        <action
+            android:id="@+id/action_pengeluaran_to_detailTransactionFragment"
+            app:destination="@id/detailTransactionFragment" />
+    </fragment>
     <fragment
         android:id="@+id/pengaturan"
         android:name="org.hz240.wallefy.pengaturan.pengaturanFragment"
@@ -64,5 +89,47 @@
             app:exitAnim="@anim/exit_to_left"
             app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_pengaturan_to_pengaturanUser"
+            app:destination="@id/pengaturanUser2" />
+        <action
+            android:id="@+id/action_pengaturan_to_pengaturanUser2"
+            app:destination="@id/pengaturanUser" />
+    </fragment>
+    <fragment
+        android:id="@+id/tambahPemasukan"
+        android:name="org.hz240.wallefy.pemasukan.tambahPemasukan"
+        android:label="Tambah Pemasukan">
+        <action
+            android:id="@+id/action_tambahPemasukan_to_pemasukan"
+            app:destination="@id/pemasukan"
+            app:enterAnim="@anim/anim_slide_in_bottom"
+            app:exitAnim="@anim/anim_slide_out_bottom"
+            app:popEnterAnim="@anim/anim_slide_in_bottom"
+            app:popExitAnim="@anim/anim_slide_out_bottom" />
+    </fragment>
+    <fragment
+        android:id="@+id/tambahPengeluaran"
+        android:name="org.hz240.wallefy.pengeluaran.tambahPengeluaran"
+        android:label="Tambah Pengeluaran">
+        <action
+            android:id="@+id/action_tambahPengeluaran_to_pengeluaran"
+            app:destination="@id/pengeluaran"
+            app:enterAnim="@anim/anim_slide_in_bottom"
+            app:exitAnim="@anim/anim_slide_out_bottom"
+            app:popEnterAnim="@anim/anim_slide_in_bottom"
+            app:popExitAnim="@anim/anim_slide_out_bottom" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailTransactionFragment"
+        android:name="org.hz240.wallefy.detailTransactionFragment"
+        android:label="detailTransactionFragment" />
+    <fragment
+        android:id="@+id/pengaturanUser"
+        android:name="org.hz240.wallefy.pengaturan.pengaturanUser"
+        android:label="Account Info">
+        <action
+            android:id="@+id/action_pengaturanUser_to_pengaturan"
+            app:destination="@id/pengaturan" />
     </fragment>
 </navigation>

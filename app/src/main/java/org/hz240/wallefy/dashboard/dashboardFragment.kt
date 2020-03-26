@@ -28,6 +28,8 @@ import org.hz240.wallefy.communityList.CommunityListActivity
 import org.hz240.wallefy.communityList.CommunityListViewModel
 import org.hz240.wallefy.data.CommunityObj
 import org.hz240.wallefy.databinding.FragmentDashboardBinding
+import org.hz240.wallefy.login.LoginActivity
+import org.hz240.wallefy.pengaturan.SettingsActivity
 import java.lang.Exception
 
 /**
@@ -51,6 +53,13 @@ class dashboardFragment : Fragment() {
 
     private val vm = Job()
     private val crScope = CoroutineScope(vm + Dispatchers.Main)
+
+    override fun onResume() {
+        super.onResume()
+        crScope.launch {
+            userLoginVM.migrateData()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -78,7 +87,18 @@ class dashboardFragment : Fragment() {
 
         viewManager = LinearLayoutManager(context)
 
+        communityListVM.error.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                binding.errView.visibility = View.VISIBLE
+                binding.latestTransactionsSection.visibility = View.INVISIBLE
+                refresh()
+            }else {
+                binding.errView.visibility = View.INVISIBLE
+                binding.latestTransactionsSection.visibility = View.VISIBLE
+            }
+        })
         communityListVM.communitySingle.observe(viewLifecycleOwner, Observer {
+            Log.i("tesSingle", it.toString())
             val latestTransactions = it!!["latestTransactions"] as ArrayList<HashMap<String, Any?>>
             if (latestTransactions.size == 0) {
                 binding.latestTransactionsSection.visibility = View.INVISIBLE
@@ -87,7 +107,7 @@ class dashboardFragment : Fragment() {
                 binding.emptyView.visibility = View.INVISIBLE
                 binding.latestTransactionsSection.visibility = View.VISIBLE
             }
-            binding.tvMoneyTotal.text = "Rp. ${it!!["saldo"].toString()}"
+            binding.tvMoneyTotal.text = it!!["saldo"].toString()
             binding.tvBalanceLatestUpdate.text = "Latest Update: ${it!!["latestUpdated"].toString()}"
 
             latestTransactions?.let {

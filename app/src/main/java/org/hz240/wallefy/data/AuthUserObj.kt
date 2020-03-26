@@ -2,6 +2,7 @@ package org.hz240.wallefy.data
 
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -44,8 +45,18 @@ object AuthUserObj {
     fun toSignOut() {
         signout()
     }
+    suspend fun setDisplayName(newData: String) {
+        changeDisplayName(newData)
+    }
 
 
+    private suspend fun changeDisplayName(newData: String) {
+        val uid = FirestoreObj._auth.currentUser?.uid
+        if (uid != null) {
+            session?.set("displayName", newData)
+            db.collection("users").document(uid).update("displayName", newData).await()
+        }
+    }
     private fun signout() {
         session = null
         authObj = hashMapOf("username" to null, "displayName" to null, "status" to null, "email" to null, "photoUrl" to null)

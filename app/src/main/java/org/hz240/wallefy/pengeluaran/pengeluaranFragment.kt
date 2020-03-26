@@ -45,6 +45,13 @@ class pengeluaranFragment : Fragment() {
     private val vm = Job()
     private val crScope = CoroutineScope(vm + Dispatchers.Main)
 
+    override fun onResume() {
+        super.onResume()
+        if (arguments?.getBoolean("onRefresh") == true) {
+            refresh()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,6 +73,17 @@ class pengeluaranFragment : Fragment() {
         binding.dataCommunityViewModel = communityListVM
         viewManager = LinearLayoutManager(context)
 
+        communityListVM.error.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                binding.errView.visibility = View.VISIBLE
+                binding.emptyView.visibility = View.INVISIBLE
+                binding.rvPengeluaran.visibility = View.INVISIBLE
+                refresh()
+            }else {
+                binding.errView.visibility = View.INVISIBLE
+                binding.rvPengeluaran.visibility = View.VISIBLE
+            }
+        })
         communityListVM.communitySingle.observe(viewLifecycleOwner, Observer {
             val pengeluaran = it!!["pengeluaran"] as ArrayList<HashMap<String, Any?>>
             if (pengeluaran.size == 0) {
@@ -115,7 +133,7 @@ class pengeluaranFragment : Fragment() {
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
-
+            R.id.to_add_pengeluaran -> view?.findNavController()?.navigate(R.id.action_pengeluaran_to_tambahPengeluaran)
         }
         return super.onOptionsItemSelected(item)
     }

@@ -1,9 +1,12 @@
 package org.hz240.wallefy.dashboard
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_transactions.view.*
 import org.hz240.wallefy.R
@@ -37,16 +40,22 @@ class TransactionsAdapter(private val myDataset: ArrayList<HashMap<String, Any?>
         if (myDataset[position].get("type").toString() == "pengeluaran") {
             holder.view.tv_type.setTextColor(ContextCompat.getColor(holder.view.context, R.color.red))
             holder.view.tv_biaya.setTextColor(ContextCompat.getColor(holder.view.context, R.color.red))
-            holder.view.tv_biaya.text = "- Rp. "+myDataset[position].get("biaya").toString()
+            holder.view.tv_biaya.text = "- ${myDataset[position].get("biaya").toString()}"
         }else {
             holder.view.tv_type.setTextColor(ContextCompat.getColor(holder.view.context, R.color.green))
             holder.view.tv_biaya.setTextColor(ContextCompat.getColor(holder.view.context, R.color.green))
-            holder.view.tv_biaya.text = "+ Rp. "+myDataset[position].get("biaya").toString()
+            holder.view.tv_biaya.text = "+ ${myDataset[position].get("biaya").toString()}"
         }
 
         holder.view.tv_title.text = myDataset[position].get("title").toString()
         holder.view.tv_time.text = myDataset[position].get("time").toString()
         holder.view.tv_type.text = myDataset[position].get("type").toString().capitalize()
+
+        holder.view.setOnClickListener {
+            Log.i("tesContext", it.context.toString())
+            val bundle = bundleOf("dataTransaction" to myDataset[position])
+            it.findNavController().navigate(R.id.detailTransactionFragment, bundle)
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)

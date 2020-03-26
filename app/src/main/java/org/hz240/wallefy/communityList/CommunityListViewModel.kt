@@ -1,5 +1,6 @@
 package org.hz240.wallefy.communityList
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,10 +20,14 @@ class CommunityListViewModel(val idCommunity: String?= null): ViewModel() {
     private val _loadingRefresh = MutableLiveData<Boolean>()
     val loadingRefresh: LiveData<Boolean> get() = _loadingRefresh
 
+    private val _error = MutableLiveData<Boolean>()
+    val error: LiveData<Boolean> get() = _error
+
     val vm = Job()
     val crScope = CoroutineScope(vm + Dispatchers.Main)
 
     init {
+        _error.value = false
         crScope.launch {
             init()
         }
@@ -81,7 +86,13 @@ class CommunityListViewModel(val idCommunity: String?= null): ViewModel() {
             if (idCommunity == null) {
                 _communityList.value = CommunityObj.getDataAll(false)
             }else {
-                _communitySingle.value = CommunityObj.getDataSingle(false, idCommunity)
+                val getData = CommunityObj.getDataSingle(false, idCommunity)
+                if (getData!!["idCommunity"] == null) {
+                    _error.value = true
+                }else {
+                    _error.value = false
+                    _communitySingle.value = getData
+                }
             }
         }catch (e: Throwable) {
 
@@ -94,7 +105,13 @@ class CommunityListViewModel(val idCommunity: String?= null): ViewModel() {
             if (idCommunity == null) {
                 _communityList.value = CommunityObj.getDataAll(true)
             }else {
-                _communitySingle.value = CommunityObj.getDataSingle(true, idCommunity)
+                val getData = CommunityObj.getDataSingle(true, idCommunity)
+                if (getData!!["idCommunity"] == null) {
+                    _error.value = true
+                }else {
+                    _error.value = false
+                    _communitySingle.value = getData
+                }
             }
         }catch (e: Throwable) {
 
