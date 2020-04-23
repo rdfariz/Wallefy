@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/iv_user_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_undraw_personal_information_962o"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></ImageView>
+
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="User Name"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="@+id/iv_user_image"
+            app:layout_constraintStart_toStartOf="@+id/iv_user_image"
+            app:layout_constraintTop_toBottomOf="@+id/iv_user_image" />
+        <TextView
+            android:id="@+id/tv_user_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="Tipe User"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="@+id/tv_user_name"
+            app:layout_constraintStart_toStartOf="@+id/tv_user_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_user_name" />
+
+        <TextView
+            android:id="@+id/tv_user_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="User Id"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/tv_user_type"
+            app:layout_constraintStart_toStartOf="@+id/tv_user_type"
+            app:layout_constraintTop_toBottomOf="@+id/tv_user_type" />
+
+        <Button
+            android:id="@+id/to_delete_person"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Hapus dari komunitas"
+            app:backgroundTint="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="@+id/tv_user_id"
+            app:layout_constraintStart_toStartOf="@+id/tv_user_id"
+            app:layout_constraintTop_toBottomOf="@+id/tv_user_id"></Button>
+
+        <Button
+            android:id="@+id/to_admin_person"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Jadikan Admin"
+            app:backgroundTint="@color/green"
+            app:layout_constraintEnd_toEndOf="@+id/to_delete_person"
+            app:layout_constraintStart_toStartOf="@+id/to_delete_person"
+            app:layout_constraintTop_toBottomOf="@+id/to_delete_person"></Button>
+
+        <Button
+            android:id="@+id/to_unadmin_person"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Jadikan Member"
+            app:backgroundTint="@color/blue_custom"
+            app:layout_constraintEnd_toEndOf="@+id/to_delete_person"
+            app:layout_constraintStart_toStartOf="@+id/to_delete_person"
+            app:layout_constraintTop_toBottomOf="@+id/to_delete_person"></Button>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

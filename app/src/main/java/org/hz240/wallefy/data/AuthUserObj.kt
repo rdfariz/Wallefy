@@ -82,8 +82,9 @@ object AuthUserObj {
                         Log.i("tesAuth", "data null")
                     }
                 }
+
                 val obj = doc.toObject(UserInfo::class.java)
-                map = hashMapOf("username" to obj?.username, "displayName" to obj?.displayName, "email" to obj?.email, "status" to obj?.status, "photoUrl" to obj?.photoUrl)
+                map = hashMapOf("id" to uid,"username" to obj?.username, "displayName" to obj?.displayName, "email" to obj?.email, "status" to obj?.status, "photoUrl" to obj?.photoUrl)
             }catch (e: Throwable) {
 
             }finally {

@@ -72,6 +72,59 @@ class ActivityViewModel: ViewModel() {
         }
     }
 
+    suspend fun deleteTransaction(idCommunity: String, idTransaction: String) {
+        try {
+            _loading.value = true
+            ActivityObj.deleteTransaction(idCommunity, idTransaction)
+        }catch (e: Exception) {
+
+        }finally {
+            _loading.value = false
+        }
+    }
+
+
+    suspend fun addPerson(idCommunity: String, idPerson: String) {
+        try {
+            _loading.value = true
+            ActivityObj.addPerson(idCommunity, idPerson)
+        }catch (e: Exception) {
+
+        }finally {
+            _loading.value = false
+        }
+    }
+    suspend fun deletePerson(idCommunity: String, idPerson: String) {
+        try {
+            _loading.value = true
+            ActivityObj.deletePerson(idCommunity, idPerson)
+        }catch (e: Exception) {
+
+        }finally {
+            _loading.value = false
+        }
+    }
+    suspend fun adminPerson(idCommunity: String, idPerson: String) {
+        try {
+            _loading.value = true
+            ActivityObj.adminPerson(idCommunity, idPerson)
+        }catch (e: Exception) {
+
+        }finally {
+            _loading.value = false
+        }
+    }
+    suspend fun unAdminPerson(idCommunity: String, idPerson: String) {
+        try {
+            _loading.value = true
+            ActivityObj.unAdminPerson(idCommunity, idPerson)
+        }catch (e: Exception) {
+
+        }finally {
+            _loading.value = false
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         vm.cancel()

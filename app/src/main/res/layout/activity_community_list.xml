@@ -10,6 +10,9 @@ xmlns:tools="http://schemas.android.com/tools">
     android:layout_height="match_parent"
     tools:context=".communityList.CommunityListActivity">
 
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
     <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,6 +23,7 @@ xmlns:tools="http://schemas.android.com/tools">
         app:navGraph="@navigation/community_list"
         tools:layout="@layout/fragment_community_list">
     </fragment>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:layout_gravity="start"

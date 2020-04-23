@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_transactions.view.*
 import org.hz240.wallefy.R
 
-class TransactionsAdapter(private val myDataset: ArrayList<HashMap<String, Any?>>) :
+class TransactionsAdapter(private val myDataset: ArrayList<HashMap<String, Any?>>, val onClickListener: OnClickListener) :
     RecyclerView.Adapter<TransactionsAdapter.MyViewHolder>() {
 
     // Provide a reference to the views for each data item
@@ -51,13 +51,15 @@ class TransactionsAdapter(private val myDataset: ArrayList<HashMap<String, Any?>
         holder.view.tv_time.text = myDataset[position].get("time").toString()
         holder.view.tv_type.text = myDataset[position].get("type").toString().capitalize()
 
-//        holder.view.setOnClickListener {
-//            Log.i("tesContext", it.context.toString())
-//            val bundle = bundleOf("dataTransaction" to myDataset[position])
-//            it.findNavController().navigate(R.id.detailTransactionFragment, bundle)
-//        }
+        holder.view.container_transaction.setOnClickListener {
+            onClickListener.onClick(myDataset[position])
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = myDataset.size
+
+    class OnClickListener(val clickListener: (transaction: HashMap<String, Any?>) -> Unit) {
+        fun onClick(transaction: HashMap<String, Any?>) = clickListener(transaction)
+    }
 }

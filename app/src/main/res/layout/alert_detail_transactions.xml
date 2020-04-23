@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp">
+
+        <ImageView
+            android:id="@+id/iv_type_transaction"
+            android:layout_width="150dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_undraw_server_down_s4lk"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></ImageView>
+
+        <TextView
+            android:id="@+id/tv_title_transaction"
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Judul Transaksi"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="@+id/iv_type_transaction"
+            app:layout_constraintStart_toStartOf="@+id/iv_type_transaction"
+            app:layout_constraintTop_toBottomOf="@+id/iv_type_transaction" />
+        <TextView
+            android:id="@+id/tv_type_transaction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="Tipe Transaksi"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="@+id/tv_title_transaction"
+            app:layout_constraintStart_toStartOf="@+id/tv_title_transaction"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title_transaction" />
+
+        <TextView
+            android:id="@+id/tv_biaya_transaction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="Biaya Transaksi"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="@+id/tv_type_transaction"
+            app:layout_constraintStart_toStartOf="@+id/tv_type_transaction"
+            app:layout_constraintTop_toBottomOf="@+id/tv_type_transaction" />
+
+        <Button
+            android:id="@+id/to_delete_transactions"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Hapus Transaksi Ini"
+            app:backgroundTint="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="@+id/tv_biaya_transaction"
+            app:layout_constraintStart_toStartOf="@+id/tv_biaya_transaction"
+            app:layout_constraintTop_toBottomOf="@+id/tv_biaya_transaction"></Button>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

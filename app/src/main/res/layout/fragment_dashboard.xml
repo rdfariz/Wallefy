@@ -91,11 +91,15 @@
 
                     <Button
                         android:id="@+id/btn_setting"
+                        style="@style/Widget.MaterialComponents.Button.Icon"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_gravity="center"
                         android:background="@drawable/pengaturan"
                         android:drawablePadding="5dp"
+                        android:visibility="visible"
+                        app:icon="@drawable/pengaturan"
+                        app:iconTint="@color/common_google_signin_btn_text_dark_pressed"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />

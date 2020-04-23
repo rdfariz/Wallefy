@@ -101,21 +101,21 @@
                 android:layout_height="match_parent">
 
                 <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_anggota"
-                        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                        android:paddingTop="16dp"
-                        android:paddingBottom="80dp"
-                        android:nestedScrollingEnabled="false"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scrollbars="vertical"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:toggleLoading="@{dataCommunityViewModel.loading}"
-                        tools:itemCount="1"
-                        tools:listitem="@layout/item_people"/>
+                    android:id="@+id/rv_anggota"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="80dp"
+                    android:clipToPadding="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:toggleLoading="@{dataCommunityViewModel.loading}"
+                    tools:itemCount="10"
+                    tools:listitem="@layout/item_people"/>
 
             </ScrollView>
 

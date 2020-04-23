@@ -8,6 +8,9 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
@@ -101,7 +104,9 @@ class pengeluaranFragment : Fragment() {
                 binding.emptyView.visibility = View.INVISIBLE
                 binding.rvPengeluaran.visibility = View.VISIBLE
             }
-            viewAdapter = TransactionsAdapter(pengeluaran)
+            viewAdapter = TransactionsAdapter(pengeluaran, TransactionsAdapter.OnClickListener{
+                toDetailTransaction(it)
+            })
             recyclerView = binding.rvPengeluaran.apply {
                 layoutManager = viewManager
                 adapter = viewAdapter
@@ -145,6 +150,59 @@ class pengeluaranFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun toDetailTransaction(transaction: HashMap<String, Any?>) {
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
+        val inflater = layoutInflater
+        val dialogLayout = inflater.inflate(R.layout.alert_detail_transactions, null)
+        val dialog: androidx.appcompat.app.AlertDialog
+
+        val idTransaction = transaction["id"].toString()
+        val title = transaction["title"].toString()
+        val type = transaction["type"].toString()
+        val biaya = transaction["biaya"].toString()
+        when(type) {
+            "pemasukan" -> dialogLayout.findViewById<ImageView>(R.id.iv_type_transaction).setImageResource(R.drawable.ic_undraw_savings_dwkw)
+            "pengeluaran" -> dialogLayout.findViewById<ImageView>(R.id.iv_type_transaction).setImageResource(R.drawable.ic_undraw_result_5583)
+        }
+
+        isAdmin.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                dialogLayout.findViewById<Button>(R.id.to_delete_transactions).visibility = View.VISIBLE
+            }else {
+                dialogLayout.findViewById<Button>(R.id.to_delete_transactions).visibility = View.GONE
+            }
+        })
+
+        alertDialogBuilder.setView(dialogLayout)
+        dialog = alertDialogBuilder.create()
+
+        dialogLayout.findViewById<TextView>(R.id.tv_title_transaction).text = title
+        dialogLayout.findViewById<TextView>(R.id.tv_type_transaction).text = type
+        dialogLayout.findViewById<TextView>(R.id.tv_biaya_transaction).text = biaya
+        dialogLayout.findViewById<Button>(R.id.to_delete_transactions).setOnClickListener {
+            idCommunity?.let { id ->
+                toDeleteTransaction(id, idTransaction, title)
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
+    }
+    private fun toDeleteTransaction(idCommunity: String, idTransaction: String, title: String) {
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
+        alertDialogBuilder.setTitle("Hapus Transaksi")
+        alertDialogBuilder.setMessage("Anda yakin ingin menghapus Transaksi ${title}")
+        alertDialogBuilder.setPositiveButton("Hapus") { dialogInterface: DialogInterface, i: Int ->
+            crScope.launch {
+                activityVM.deleteTransaction(idCommunity, idTransaction)
+                refresh()
+            }
+        }
+        alertDialogBuilder.setNegativeButton("Batal") { dialogInterface: DialogInterface, i: Int ->
+
+        }
+        alertDialogBuilder.show()
     }
 
     private fun toClearPengeluaran() {
