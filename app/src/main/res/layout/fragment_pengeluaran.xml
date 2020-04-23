@@ -99,7 +99,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_pengeluaran"
                 android:paddingTop="16dp"
-                android:paddingBottom="35dp"
+                android:paddingBottom="80dp"
                 android:nestedScrollingEnabled="false"
                 android:clipToPadding="false"
                 android:layout_width="match_parent"
@@ -114,6 +114,22 @@
                 tools:listitem="@layout/item_transactions" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/to_add_pengeluaran"
+            android:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:src="@drawable/ic_add_white_24dp"
+            app:backgroundTint="@color/blue_custom"
+            app:iconTint="@color/white"
+            app:tint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:rippleColor="@color/colorPrimary"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -2,6 +2,8 @@
     <string name="app_name">Wallefy</string>
     <integer name="duration_animation">275</integer>
 
+    <string name="banner_ad_unit_id">ca-app-pub-3201440176132802/3323260938</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="username_print">Hi, %s</string>
 

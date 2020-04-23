@@ -135,7 +135,6 @@
                         app:layout_constraintTop_toTopOf="parent"></TextView>
 
                     <TextView
-                        app:toggleLoading="@{dataCommunityViewModel.loading}"
                         android:id="@+id/tv_money_total"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -148,7 +147,6 @@
                         app:layout_constraintTop_toBottomOf="@+id/tv_title_total"></TextView>
 
                     <ProgressBar
-                        app:toggleLoading="@{dataCommunityViewModel.loading}"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:indeterminateTint="@color/gray_custom"
@@ -159,7 +157,6 @@
                     </ProgressBar>
 
                     <TextView
-                        app:toggleLoading="@{dataCommunityViewModel.loading}"
                         android:id="@+id/tv_balance_latest_update"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

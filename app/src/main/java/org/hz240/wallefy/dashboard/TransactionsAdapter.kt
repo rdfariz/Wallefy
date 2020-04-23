@@ -51,11 +51,11 @@ class TransactionsAdapter(private val myDataset: ArrayList<HashMap<String, Any?>
         holder.view.tv_time.text = myDataset[position].get("time").toString()
         holder.view.tv_type.text = myDataset[position].get("type").toString().capitalize()
 
-        holder.view.setOnClickListener {
-            Log.i("tesContext", it.context.toString())
-            val bundle = bundleOf("dataTransaction" to myDataset[position])
-            it.findNavController().navigate(R.id.detailTransactionFragment, bundle)
-        }
+//        holder.view.setOnClickListener {
+//            Log.i("tesContext", it.context.toString())
+//            val bundle = bundleOf("dataTransaction" to myDataset[position])
+//            it.findNavController().navigate(R.id.detailTransactionFragment, bundle)
+//        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)

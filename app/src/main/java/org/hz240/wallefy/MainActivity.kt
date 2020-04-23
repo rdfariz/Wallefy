@@ -6,14 +6,21 @@ import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.Source
+import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.iid.InstanceIdResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -62,9 +69,6 @@ class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRecei
         } else if (isConnected) {
             snackbar?.dismiss()
             FirestoreObj.changeSource(Source.SERVER)
-//            snackbar = Snackbar.make(findViewById(R.id.root_layout), "Connected to server", Snackbar.LENGTH_SHORT) //Assume "rootLayout" as the root layout of every activity
-//            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.green))
-//            snackbar?.show()
         } else {
             FirestoreObj.changeSource(Source.DEFAULT)
         }
@@ -104,13 +108,4 @@ class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRecei
         val navCtrl = this.findNavController(R.id.nav_host_fragment_container)
         return navCtrl.navigateUp()
     }
-
-//    override fun finish() {
-//        super.finish()
-//        overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
-//    }
-//    override fun startActivity(intent: Intent?) {
-//        super.startActivity(intent)
-//        overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
-//    }
 }

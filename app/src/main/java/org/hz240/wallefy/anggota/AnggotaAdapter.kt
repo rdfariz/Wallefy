@@ -3,6 +3,7 @@ package org.hz240.wallefy.detailCommunity.anggota
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_people.view.*
@@ -31,14 +32,15 @@ class AnggotaAdapter(private val myDataset: ArrayList<HashMap<String, Any?>>) :
     val picasso = Picasso.get()
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
         holder.people.tv_username.text = myDataset[position].get("displayName").toString()
-        holder.people.tv_status.text = myDataset[position].get("email").toString()
-        holder.people.status_bayar.text = myDataset[position].get("type").toString()
+
+        val type = myDataset[position].get("type").toString()
+        if (type == "admin") { holder.people.tv_status.setTextColor(ContextCompat.getColor(holder.people.context, R.color.green)) }
+        else { holder.people.tv_status.setTextColor(ContextCompat.getColor(holder.people.context, R.color.blue_custom)) }
+        holder.people.tv_status.text = type.capitalize()
+
         picasso.load(myDataset[position].get("photoUrl").toString()).placeholder(R.drawable.ic_sync_black_24dp).error(R.drawable.ic_person_white_24dp).into(holder.people.iv_user_image)
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = myDataset.size
 }

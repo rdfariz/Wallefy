@@ -15,6 +15,11 @@
         android:roundIcon="@drawable/ic_logo_icon_bg"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3201440176132802~3099706139"/>
+
         <activity android:name=".communityList.CommunityListActivity"
             android:screenOrientation="portrait">
         </activity>
@@ -57,6 +62,14 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:stopWithTask="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
     </application>
 

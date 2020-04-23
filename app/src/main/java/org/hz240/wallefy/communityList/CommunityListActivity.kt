@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.firebase.auth.FirebaseUser
@@ -23,6 +24,8 @@ import org.hz240.wallefy.utils.ConnectivityReceiver
 import org.hz240.wallefy.utils.FirestoreObj
 
 class CommunityListActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityReceiverListener {
+
+    private lateinit var drawerLayout: DrawerLayout
 
     private lateinit var binding: ActivityCommunityListBinding
     private var auth = FirestoreObj._auth
@@ -76,13 +79,15 @@ class CommunityListActivity : AppCompatActivity(), ConnectivityReceiver.Connecti
         updateUI(currentUser)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_community_list)
+        drawerLayout = binding.rootLayout
         val navCtrl = this.findNavController(R.id.nav_host_fragment_container)
-        NavigationUI.setupActionBarWithNavController(this, navCtrl)
+        NavigationUI.setupActionBarWithNavController(this, navCtrl, drawerLayout)
+        NavigationUI.setupWithNavController(binding.navView, navCtrl)
     }
 
     override fun onSupportNavigateUp(): Boolean {
         val navCtrl = this.findNavController(R.id.nav_host_fragment_container)
-        return navCtrl.navigateUp()
+        return NavigationUI.navigateUp(navCtrl, drawerLayout)
     }
 
 }

@@ -9,10 +9,7 @@ import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
@@ -40,13 +37,8 @@ class anggotaFragment : Fragment() {
         override fun <T : ViewModel> create(aClass: Class<T>):T = f() as T
     }
 
-    private var menuDynamic = R.menu.anggota_menu
-    init {
-        var admin = true
-        if (admin) {
-            menuDynamic = R.menu.anggota_menu
-        }
-    }
+    private val isAdmin = MutableLiveData<Boolean>()
+    private var idCommunity : String? = null
 
     private val vm = Job()
     private val crScope = CoroutineScope(vm + Dispatchers.Main)
@@ -65,7 +57,7 @@ class anggotaFragment : Fragment() {
         setHasOptionsMenu(true)
 //      Get ID from sharedpreferences
         sharedPref = activity?.getSharedPreferences("selectedCommunity", Context.MODE_PRIVATE)!!
-        var idCommunity = sharedPref.getString("idCommunity", null)
+        idCommunity = sharedPref.getString("idCommunity", null)
         if (idCommunity == null) {
             activity?.let{
                 val intent = Intent (it, CommunityListActivity::class.java)
@@ -92,6 +84,7 @@ class anggotaFragment : Fragment() {
         })
         communityListVM.communitySingle.observe(viewLifecycleOwner, Observer {
             val anggota = it!!["members"] as ArrayList<HashMap<String, Any?>>
+            isAdmin.value = it!!["isAdmin"] as Boolean?
             if (anggota.size == 0) {
                 binding.rvAnggota.visibility = View.INVISIBLE
                 binding.emptyView.visibility = View.VISIBLE
@@ -114,6 +107,14 @@ class anggotaFragment : Fragment() {
             refresh()
         }
 
+        isAdmin.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                binding.toAddAnggota.visibility = View.VISIBLE
+            }else {
+                binding.toAddAnggota.visibility = View.INVISIBLE
+            }
+        })
+
         return binding.root
     }
 
@@ -135,24 +136,7 @@ class anggotaFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(menuDynamic,menu)
-//        menu.clear()
-//        val searchView = SearchView((context as MainActivity).supportActionBar?.themedContext ?: context)
-//        menu.findItem(R.id.app_bar_search).apply {
-//            setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or MenuItem.SHOW_AS_ACTION_IF_ROOM)
-//            actionView = searchView
-//        }
-//
-//        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-//            override fun onQueryTextSubmit(query: String): Boolean {
-//                return false
-//            }
-//
-//            override fun onQueryTextChange(newText: String): Boolean {
-//                return false
-//            }
-//        })
-//        searchView.setOnClickListener {view ->  Log.i("tesmenu", "search..")}
+        inflater.inflate(R.menu.anggota_menu,menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

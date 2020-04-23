@@ -50,6 +50,28 @@ class ActivityViewModel: ViewModel() {
         }
     }
 
+    suspend fun clearPemasukan(idCommunity: String) {
+        try {
+            _loading.value = true
+            ActivityObj.clearPemasukan(idCommunity)
+        }catch (e: Exception) {
+
+        }finally {
+            _loading.value = false
+        }
+    }
+
+    suspend fun clearPengeluaran(idCommunity: String) {
+        try {
+            _loading.value = true
+            ActivityObj.clearPengeluaran(idCommunity)
+        }catch (e: Exception) {
+
+        }finally {
+            _loading.value = false
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         vm.cancel()

@@ -1,5 +1,7 @@
 package org.hz240.wallefy.pemasukan
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -9,12 +11,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.FieldValue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,20 +64,19 @@ class tambahPemasukan : Fragment() {
         activityVM = ViewModelProviders.of(this).get(ActivityViewModel::class.java)
         binding.dataActivityViewModel = activityVM
 
-//        activityVM.loading.observe(viewLifecycleOwner, Observer {
-//            Log.i("tesLOADING", it.toString())
-//            binding.loadingPanel.bringToFront()
-//            if (it == true) {
-//                binding.loadingPanel.visibility = View.VISIBLE
-//            }else {
-//                binding.loadingPanel.visibility = View.INVISIBLE
-//            }
-//        })
-
         binding.pushItem.setOnClickListener {
+            hideKeyboard()
             addPemasukan(idCommunity.toString())
         }
+
+        _handleLoading()
+
         return binding.root
+    }
+
+    override fun onPause() {
+        hideKeyboard()
+        super.onPause()
     }
 
     fun addPemasukan(idCommunity: String) {
@@ -88,6 +91,35 @@ class tambahPemasukan : Fragment() {
 
             }
         }
+    }
+
+    fun _handleLoading() {
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
+        val inflater = layoutInflater
+        val dialogLayout = inflater.inflate(R.layout.alert_dialog_loading, null)
+
+        alertDialogBuilder.setTitle("Memproses Data")
+        alertDialogBuilder.setCancelable(false)
+        alertDialogBuilder.setView(dialogLayout)
+        val dialog = alertDialogBuilder.create()
+
+        activityVM.loading.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                dialog.show()
+            }else {
+                dialog.dismiss()
+            }
+        })
+    }
+    fun Fragment.hideKeyboard() {
+        view?.let { activity?.hideKeyboard(it) }
+    }
+    fun Activity.hideKeyboard() {
+        hideKeyboard(currentFocus ?: View(this))
+    }
+    fun Context.hideKeyboard(view: View) {
+        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
 }

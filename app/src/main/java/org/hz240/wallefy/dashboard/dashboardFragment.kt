@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
 import org.hz240.wallefy.R
@@ -98,7 +99,6 @@ class dashboardFragment : Fragment() {
             }
         })
         communityListVM.communitySingle.observe(viewLifecycleOwner, Observer {
-            Log.i("tesSingle", it.toString())
             val latestTransactions = it!!["latestTransactions"] as ArrayList<HashMap<String, Any?>>
             if (latestTransactions.size == 0) {
                 binding.latestTransactionsSection.visibility = View.INVISIBLE
@@ -142,6 +142,8 @@ class dashboardFragment : Fragment() {
             refresh()
         }
 
+        _handleLoading()
+
         return binding.root
     }
 
@@ -158,6 +160,25 @@ class dashboardFragment : Fragment() {
                 }
             }
         }
+    }
+
+    fun _handleLoading() {
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
+        val inflater = layoutInflater
+        val dialogLayout = inflater.inflate(R.layout.alert_dialog_loading, null)
+
+        alertDialogBuilder.setTitle("Menyiapkan Data")
+        alertDialogBuilder.setCancelable(false)
+        alertDialogBuilder.setView(dialogLayout)
+        val dialog = alertDialogBuilder.create()
+
+        communityListVM.loading.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                dialog.show()
+            }else {
+                dialog.dismiss()
+            }
+        })
     }
 
     override fun onDestroy() {

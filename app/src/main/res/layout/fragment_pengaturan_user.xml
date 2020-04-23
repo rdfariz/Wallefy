@@ -12,35 +12,6 @@
         android:layout_height="match_parent"
         tools:context=".pengaturan.pengaturanUser">
 
-        <RelativeLayout
-            android:id="@+id/loadingPanel"
-            app:toggleLoading="@{dataUsersViewModel.loading}"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <LinearLayout
-                android:id="@+id/linearLayout3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:alpha="0.8"
-                android:background="#FFFFFF"
-                android:orientation="horizontal">
-            </LinearLayout>
-
-            <ProgressBar
-                style="?android:attr/progressBarStyleHorizontal"
-                android:max="100"
-                android:indeterminate="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:indeterminateTint="@color/gray_custom"/>
-        </RelativeLayout>
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/profileSection"
             android:layout_width="match_parent"

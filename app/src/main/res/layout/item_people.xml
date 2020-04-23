@@ -48,11 +48,13 @@
                 android:layout_height="wrap_content"
                 android:text="Email/Type"
                 android:layout_marginTop="6dp"
-                android:textSize="14sp"></TextView>
+                android:textSize="14sp"
+                android:textStyle="bold"></TextView>
         </LinearLayout>
 
         <TextView
             android:id="@+id/tv_jml_biaya"
+            android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="64dp"
@@ -64,6 +66,7 @@
 
         <TextView
             android:id="@+id/status_bayar"
+            android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"

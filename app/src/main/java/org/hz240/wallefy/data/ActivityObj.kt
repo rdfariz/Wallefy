@@ -12,7 +12,7 @@ object ActivityObj {
 
     suspend fun addPemasukan(idCommunity: String, data: HashMap<String, Any?>) {
         val push = db.collection("organisasi").document(idCommunity).collection("activity").add(data).await()
-        val org = db.collection("organisasi").document(idCommunity).get().await()
+        val org = db.collection("organisasi").document(idCommunity).get(FirestoreObj._sourceDynamic).await()
         val updSaldo = db.collection("organisasi").document(idCommunity).update("saldo", FieldValue.increment(data["biaya"] as Long)).await()
     }
 
@@ -37,5 +37,22 @@ object ActivityObj {
         }.await()
     }
 
+    suspend fun clearPemasukan(idCommunity: String) {
+        val type = "pemasukan"
+        val ref = db.collection("organisasi").document(idCommunity).collection("activity")
+        val pemasukan = ref.whereEqualTo("type", type).get(FirestoreObj._sourceDynamic).await()
+        pemasukan.forEach {
+            ref.document(it.id).delete().await()
+        }
+    }
+
+    suspend fun clearPengeluaran(idCommunity: String) {
+        val type = "pengeluaran"
+        val ref = db.collection("organisasi").document(idCommunity).collection("activity")
+        val pemasukan = ref.whereEqualTo("type", type).get(FirestoreObj._sourceDynamic).await()
+        pemasukan.forEach {
+            ref.document(it.id).delete().await()
+        }
+    }
 
 }

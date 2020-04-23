@@ -1,6 +1,7 @@
 package org.hz240.wallefy.pengaturan
 
 import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,6 +13,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.Source
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
@@ -53,11 +55,14 @@ class pengaturanUser : Fragment() {
         binding.toChangeDisplayName.setOnClickListener {
             changeDisplayName()
         }
+
+        _handleLoading()
+        
         return binding.root
     }
 
     fun withEditText() {
-        val builder = AlertDialog.Builder(context)
+        val builder = MaterialAlertDialogBuilder(context)
         val inflater = layoutInflater
         builder.setTitle("Change Display Name")
         val dialogLayout = inflater.inflate(R.layout.alert_dialog_display_name, null)
@@ -76,6 +81,9 @@ class pengaturanUser : Fragment() {
                 Toast.makeText(context, "Anda harus terhubung ke jaringan", Toast.LENGTH_SHORT).show()
             }
         }
+        builder.setNegativeButton("Batal") { dialogInterface: DialogInterface, i: Int ->
+
+        }
         builder.show()
     }
 
@@ -84,6 +92,25 @@ class pengaturanUser : Fragment() {
     }
     private fun changePhotoUrl() {
 
+    }
+
+    fun _handleLoading() {
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
+        val inflater = layoutInflater
+        val dialogLayout = inflater.inflate(R.layout.alert_dialog_loading, null)
+
+        alertDialogBuilder.setTitle("Memproses Data")
+        alertDialogBuilder.setCancelable(false)
+        alertDialogBuilder.setView(dialogLayout)
+        val dialog = alertDialogBuilder.create()
+
+        userLoginVM.loading.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                dialog.show()
+            }else {
+                dialog.dismiss()
+            }
+        })
     }
 
     override fun onDestroy() {

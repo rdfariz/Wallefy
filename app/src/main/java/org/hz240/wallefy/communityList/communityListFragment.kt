@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.*
 import org.hz240.wallefy.data.AuthUserObj
 import org.hz240.wallefy.R
@@ -95,7 +96,7 @@ class communityListFragment : Fragment() {
     }
 
     private suspend fun signout() {
-        val alertDialogBuilder = AlertDialog.Builder(context)
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
         alertDialogBuilder.setTitle("Keluar Akun")
         alertDialogBuilder.setMessage("Anda yakin ingin keluar dari akun ini?")
         alertDialogBuilder.setPositiveButton("Keluar") { dialogInterface: DialogInterface, i: Int ->

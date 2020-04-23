@@ -10,8 +10,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.Source
 import kotlinx.coroutines.*
@@ -58,11 +60,14 @@ class joinCommunityFragment : Fragment() {
                 }
             }
         }
+
+        _handleLoading()
+
         return binding.root
     }
 
     suspend fun joinCommunity(title: String, message: String) {
-        val alertDialogBuilder = AlertDialog.Builder(context)
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
         alertDialogBuilder.setTitle(title)
         alertDialogBuilder.setMessage(message)
         alertDialogBuilder.setPositiveButton("Gabung") { dialogInterface: DialogInterface, i: Int ->
@@ -80,6 +85,25 @@ class joinCommunityFragment : Fragment() {
 
         }
         alertDialogBuilder.show()
+    }
+
+    fun _handleLoading() {
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
+        val inflater = layoutInflater
+        val dialogLayout = inflater.inflate(R.layout.alert_dialog_loading, null)
+
+        alertDialogBuilder.setTitle("Memproses Data")
+        alertDialogBuilder.setCancelable(false)
+        alertDialogBuilder.setView(dialogLayout)
+        val dialog = alertDialogBuilder.create()
+
+        communityListVM.loading.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                dialog.show()
+            }else {
+                dialog.dismiss()
+            }
+        })
     }
 
     override fun onDestroy() {

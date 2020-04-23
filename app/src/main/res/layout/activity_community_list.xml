@@ -3,7 +3,8 @@
 xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools">
 
-<RelativeLayout
+
+<androidx.drawerlayout.widget.DrawerLayout
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,5 +21,12 @@ xmlns:tools="http://schemas.android.com/tools">
         tools:layout="@layout/fragment_community_list">
     </fragment>
 
-</RelativeLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:layout_gravity="start"
+        android:id="@+id/navView"
+        app:menu="@menu/drawer_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"/>
+
+</androidx.drawerlayout.widget.DrawerLayout>
 </layout>

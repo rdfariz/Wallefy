@@ -2,9 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/to_add_pemasukan"
-        android:title=""
-        app:showAsAction="always"
-        android:icon="@drawable/ic_add_white_24dp"
+        android:id="@+id/to_clear_pemasukan"
+        android:title="Bersihkan Pemasukan"
+        android:visible="false"
     />
 </menu>

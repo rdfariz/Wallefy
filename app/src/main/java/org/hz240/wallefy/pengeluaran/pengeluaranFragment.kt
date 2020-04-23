@@ -1,7 +1,9 @@
 package org.hz240.wallefy.pengeluaran
 
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -9,13 +11,11 @@ import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.*
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.*
 import org.hz240.wallefy.R
 import org.hz240.wallefy.communityList.CommunityListActivity
@@ -23,6 +23,7 @@ import org.hz240.wallefy.communityList.CommunityListViewModel
 import org.hz240.wallefy.dashboard.TransactionsAdapter
 import org.hz240.wallefy.databinding.FragmentPemasukanBinding
 import org.hz240.wallefy.databinding.FragmentPengeluaranBinding
+import org.hz240.wallefy.viewModel.ActivityViewModel
 
 /**
  * A simple [Fragment] subclass.
@@ -35,6 +36,8 @@ class pengeluaranFragment : Fragment() {
 
     private lateinit var binding: FragmentPengeluaranBinding
     private lateinit var communityListVM: CommunityListViewModel
+    private lateinit var activityVM: ActivityViewModel
+
     private lateinit var sharedPref : SharedPreferences
 
     private inline fun <VM : ViewModel> viewModelFactory(crossinline f: () -> VM) =
@@ -44,6 +47,9 @@ class pengeluaranFragment : Fragment() {
 
     private val vm = Job()
     private val crScope = CoroutineScope(vm + Dispatchers.Main)
+
+    private val isAdmin = MutableLiveData<Boolean>()
+    private var idCommunity : String? = null
 
     override fun onResume() {
         super.onResume()
@@ -59,7 +65,7 @@ class pengeluaranFragment : Fragment() {
         setHasOptionsMenu(true)
 //      Get ID from sharedpreferences
         sharedPref = activity?.getSharedPreferences("selectedCommunity", Context.MODE_PRIVATE)!!
-        var idCommunity = sharedPref.getString("idCommunity", null)
+        idCommunity = sharedPref.getString("idCommunity", null)
         if (idCommunity == null) {
             activity?.let{
                 val intent = Intent (it, CommunityListActivity::class.java)
@@ -68,8 +74,9 @@ class pengeluaranFragment : Fragment() {
         }
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_pengeluaran, container, false)
         binding.setLifecycleOwner(this)
-        communityListVM = ViewModelProviders.of(this, viewModelFactory { CommunityListViewModel(idCommunity.toString()) }).get(
-            CommunityListViewModel::class.java)
+        communityListVM = ViewModelProviders.of(this, viewModelFactory { CommunityListViewModel(idCommunity.toString()) }).get(CommunityListViewModel::class.java)
+        activityVM = ViewModelProviders.of(this).get(ActivityViewModel::class.java)
+
         binding.dataCommunityViewModel = communityListVM
         viewManager = LinearLayoutManager(context)
 
@@ -86,6 +93,7 @@ class pengeluaranFragment : Fragment() {
         })
         communityListVM.communitySingle.observe(viewLifecycleOwner, Observer {
             val pengeluaran = it!!["pengeluaran"] as ArrayList<HashMap<String, Any?>>
+            isAdmin.value = it!!["isAdmin"] as Boolean?
             if (pengeluaran.size == 0) {
                 binding.rvPengeluaran.visibility = View.INVISIBLE
                 binding.emptyView.visibility = View.VISIBLE
@@ -108,6 +116,19 @@ class pengeluaranFragment : Fragment() {
             refresh()
         }
 
+        isAdmin.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                binding.toAddPengeluaran.visibility = View.VISIBLE
+            }else {
+                binding.toAddPengeluaran.visibility = View.INVISIBLE
+            }
+        })
+        binding.toAddPengeluaran.setOnClickListener {
+            it.findNavController()?.navigate(R.id.action_pengeluaran_to_tambahPengeluaran)
+        }
+
+        _handleLoading()
+
         return binding.root
     }
 
@@ -126,14 +147,64 @@ class pengeluaranFragment : Fragment() {
         }
     }
 
+    private fun toClearPengeluaran() {
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
+        alertDialogBuilder.setTitle("Bersihkan Pengeluaran")
+        alertDialogBuilder.setMessage("Anda yakin ingin membersihkan semua data pengeluaran?")
+        alertDialogBuilder.setPositiveButton("Bersihkan") { dialogInterface: DialogInterface, i: Int ->
+            clearPengeluaran()
+        }
+        alertDialogBuilder.setNegativeButton("Batal") { dialogInterface: DialogInterface, i: Int ->
+
+        }
+        alertDialogBuilder.show()
+    }
+    private fun clearPengeluaran() {
+        crScope.launch {
+            idCommunity?.let {
+                activityVM.clearPengeluaran(it)
+                refresh()
+            }
+        }
+    }
+
+    fun _handleLoading() {
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
+        val inflater = layoutInflater
+        val dialogLayout = inflater.inflate(R.layout.alert_dialog_loading, null)
+
+        alertDialogBuilder.setTitle("Memproses Data")
+        alertDialogBuilder.setCancelable(false)
+        alertDialogBuilder.setView(dialogLayout)
+        val dialog = alertDialogBuilder.create()
+
+        activityVM.loading.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                dialog.show()
+            }else {
+                dialog.dismiss()
+            }
+        })
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        isAdmin.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                menu.findItem(R.id.to_clear_pengeluaran).setVisible(true);
+            }else {
+                menu.findItem(R.id.to_clear_pengeluaran).setVisible(false);
+            }
+        })
+        super.onPrepareOptionsMenu(menu)
+    }
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.pengeluaran_menu,menu)
-
+        inflater.inflate(R.menu.pengeluaran_menu, menu)
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
-            R.id.to_add_pengeluaran -> view?.findNavController()?.navigate(R.id.action_pengeluaran_to_tambahPengeluaran)
+            R.id.to_clear_pengeluaran -> toClearPengeluaran()
         }
         return super.onOptionsItemSelected(item)
     }

@@ -1,7 +1,9 @@
 package org.hz240.wallefy.pemasukan
 
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -14,12 +16,16 @@ import androidx.lifecycle.*
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.*
 import org.hz240.wallefy.R
 import org.hz240.wallefy.communityList.CommunityListActivity
 import org.hz240.wallefy.communityList.CommunityListViewModel
 import org.hz240.wallefy.dashboard.TransactionsAdapter
+import org.hz240.wallefy.data.AuthUserObj
 import org.hz240.wallefy.databinding.FragmentPemasukanBinding
+import org.hz240.wallefy.login.LoginActivity
+import org.hz240.wallefy.viewModel.ActivityViewModel
 
 
 /**
@@ -33,6 +39,8 @@ class pemasukanFragment : Fragment() {
 
     private lateinit var binding: FragmentPemasukanBinding
     private lateinit var communityListVM: CommunityListViewModel
+    private lateinit var activityVM: ActivityViewModel
+
     private lateinit var sharedPref : SharedPreferences
 
     private inline fun <VM : ViewModel> viewModelFactory(crossinline f: () -> VM) =
@@ -43,8 +51,8 @@ class pemasukanFragment : Fragment() {
     private val vm = Job()
     private val crScope = CoroutineScope(vm + Dispatchers.Main)
 
-    private var menuDynamic = R.menu.anggota_menu
     private val isAdmin = MutableLiveData<Boolean>()
+    private var idCommunity : String? = null
 
     override fun onResume() {
         super.onResume()
@@ -59,7 +67,7 @@ class pemasukanFragment : Fragment() {
         setHasOptionsMenu(true)
 //      Get ID from sharedpreferences
         sharedPref = activity?.getSharedPreferences("selectedCommunity", Context.MODE_PRIVATE)!!
-        var idCommunity = sharedPref.getString("idCommunity", null)
+        idCommunity = sharedPref.getString("idCommunity", null)
         if (idCommunity == null) {
             activity?.let{
                 val intent = Intent (it, CommunityListActivity::class.java)
@@ -69,6 +77,7 @@ class pemasukanFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_pemasukan, container, false)
         binding.setLifecycleOwner(this)
         communityListVM = ViewModelProviders.of(this, viewModelFactory { CommunityListViewModel(idCommunity.toString()) }).get(CommunityListViewModel::class.java)
+        activityVM = ViewModelProviders.of(this).get(ActivityViewModel::class.java)
 
         binding.dataCommunityViewModel = communityListVM
         viewManager = LinearLayoutManager(context)
@@ -109,6 +118,19 @@ class pemasukanFragment : Fragment() {
             refresh()
         }
 
+        isAdmin.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                binding.toAddPemasukan.visibility = View.VISIBLE
+            }else {
+                binding.toAddPemasukan.visibility = View.INVISIBLE
+            }
+        })
+        binding.toAddPemasukan.setOnClickListener {
+            it.findNavController()?.navigate(R.id.action_pemasukan_to_tambahPemasukan)
+        }
+
+        _handleLoading()
+
         return binding.root
     }
 
@@ -127,24 +149,64 @@ class pemasukanFragment : Fragment() {
         }
     }
 
+    private fun toClearPemasukan() {
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
+        alertDialogBuilder.setTitle("Bersihkan Pemasukan")
+        alertDialogBuilder.setMessage("Anda yakin ingin membersihkan semua data pemasukan?")
+        alertDialogBuilder.setPositiveButton("Bersihkan") { dialogInterface: DialogInterface, i: Int ->
+            clearPemasukan()
+        }
+        alertDialogBuilder.setNegativeButton("Batal") { dialogInterface: DialogInterface, i: Int ->
 
+        }
+        alertDialogBuilder.show()
+    }
+    private fun clearPemasukan() {
+        crScope.launch {
+            idCommunity?.let {
+                activityVM.clearPemasukan(it)
+                refresh()
+            }
+        }
+    }
+
+    fun _handleLoading() {
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
+        val inflater = layoutInflater
+        val dialogLayout = inflater.inflate(R.layout.alert_dialog_loading, null)
+
+        alertDialogBuilder.setTitle("Memproses Data")
+        alertDialogBuilder.setCancelable(false)
+        alertDialogBuilder.setView(dialogLayout)
+        val dialog = alertDialogBuilder.create()
+
+        activityVM.loading.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                dialog.show()
+            }else {
+                dialog.dismiss()
+            }
+        })
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        isAdmin.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                menu.findItem(R.id.to_clear_pemasukan).setVisible(true);
+            }else {
+                menu.findItem(R.id.to_clear_pemasukan).setVisible(false);
+            }
+        })
+        super.onPrepareOptionsMenu(menu)
+    }
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-//        isAdmin.observe(viewLifecycleOwner, Observer {
-//            if (it == true) {
-//                Log.i("tesAdmimn", true.toString())
-//                menuDynamic = R.menu.pemasukan_menu
-//                inflater.inflate(menuDynamic,menu)
-//            }else {
-//                inflater.inflate(menuDynamic,menu)
-//                Log.i("tesAdmimn", false.toString())
-//            }
-//        })
-
+        inflater.inflate(R.menu.pemasukan_menu, menu)
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
-            R.id.to_add_pemasukan -> view?.findNavController()?.navigate(R.id.action_pemasukan_to_tambahPemasukan)
+            R.id.to_clear_pemasukan -> toClearPemasukan()
         }
         return super.onOptionsItemSelected(item)
     }

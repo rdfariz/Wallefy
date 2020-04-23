@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
 import org.hz240.wallefy.R
@@ -101,7 +102,7 @@ class pengaturanFragment : Fragment() {
 
 
     private suspend fun signout() {
-        val alertDialogBuilder = AlertDialog.Builder(context)
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
         alertDialogBuilder.setTitle("Keluar Akun")
         alertDialogBuilder.setMessage("Anda yakin ingin keluar dari akun ini?")
         alertDialogBuilder.setPositiveButton("Keluar") { dialogInterface: DialogInterface, i: Int ->
@@ -118,7 +119,7 @@ class pengaturanFragment : Fragment() {
         alertDialogBuilder.show()
     }
     private suspend fun outCommunity(title: String, message: String, idCommunity: String) {
-        val alertDialogBuilder = AlertDialog.Builder(context)
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
         alertDialogBuilder.setTitle(title)
         alertDialogBuilder.setMessage(message)
         alertDialogBuilder.setPositiveButton("Keluar") { dialogInterface: DialogInterface, i: Int ->
