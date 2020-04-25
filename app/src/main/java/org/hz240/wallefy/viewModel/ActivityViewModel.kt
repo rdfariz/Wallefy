@@ -70,7 +70,7 @@ class ActivityViewModel: ViewModel() {
     }
 
 
-    suspend fun getPerson(idPerson: String): HashMap<String, Any?> {
+    suspend fun getPerson(idPerson: String): HashMap<String, Any?>? {
         _loading.value = true
         val obj = ActivityObj.getPerson(idPerson)
         _loading.value = false

@@ -178,6 +178,7 @@ class anggotaFragment : Fragment() {
         val builder = MaterialAlertDialogBuilder(context)
         val inflater = layoutInflater
         builder.setTitle("Tambah Anggota")
+        builder.setMessage("Inputkan ID anggota")
         val dialogLayout = inflater.inflate(R.layout.alert_dialog_display_name, null)
         val editText  = dialogLayout.findViewById<EditText>(R.id.et_displayName)
         builder.setView(dialogLayout)
@@ -185,7 +186,11 @@ class anggotaFragment : Fragment() {
             if (editText.text.length != 0 && FirestoreObj._sourceDynamic != Source.CACHE) {
                 crScope.launch {
                     val dataPerson = activityVM.getPerson(editText.text.toString())
-                    confirmPerson(editText.text.toString(), dataPerson)
+                    if (dataPerson != null) {
+                        confirmPerson(editText.text.toString(), dataPerson)
+                    }else {
+                        showMessages("User tidak ditemukan", "error")
+                    }
                 }
             }else if(editText.text.length == 0){
                 showMessages("ID User tidak boleh kosong", "error")

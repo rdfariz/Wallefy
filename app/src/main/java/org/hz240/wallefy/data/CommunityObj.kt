@@ -238,6 +238,35 @@ object CommunityObj {
             return found
         }
     }
+    suspend fun resetCommunity(idCommunity: String): HashMap<String, Any?> {
+        val obj = hashMapOf<String, Any?>("status" to false, "message" to null)
+        var isAdmin = false
+        try {
+            val uid = FirestoreObj._auth.currentUser?.uid.toString()
+            val usrRef = db.collection("users").document(uid)
+            val ref = db.collection("organisasi").document(idCommunity)
+            val community = ref.get().await()
+            val adminRef = community.data?.get("admin") as ArrayList<DocumentReference>
+            adminRef.forEach {
+                if (it == usrRef) {
+                    isAdmin = true
+                    ActivityObj.exeClearPemasukan(idCommunity)
+                    ActivityObj.exeClearPengeluaran(idCommunity)
+                    ref.update("saldo", 0).await()
+                    obj["status"] = true
+                    obj["message"] = "Komunitas Berhasil Direset"
+                }
+            }
+        }catch (e: Exception) {
+            obj["status"] = false
+            obj["message"] = "Gagal Reset Komunitas"
+        }finally {
+            if (isAdmin == false) {
+                obj["message"] = "Anda tidak punya akses mengatur komunitas"
+            }
+            return obj
+        }
+    }
 
 
     private suspend fun getCommunityAll(): ArrayList<HashMap<String, Any?>> {
