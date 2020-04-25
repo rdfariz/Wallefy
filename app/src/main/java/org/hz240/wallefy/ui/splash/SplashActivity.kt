@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -78,7 +79,7 @@ class SplashActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
                             checkAuth()
                         }, SPLASH_TIME_OUT)
                     }else {
-                        val alertDialogBuilder = AlertDialog.Builder(this)
+                        val alertDialogBuilder = MaterialAlertDialogBuilder(this)
                         alertDialogBuilder.setTitle("Tidak Support Versi Aplikasi")
                         alertDialogBuilder.setMessage("Versi aplikasi yang anda gunakan telalu lawas, silahkan update")
                         alertDialogBuilder.setPositiveButton("Keluar", DialogInterface.OnClickListener { dialog, which ->

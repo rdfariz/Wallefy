@@ -104,6 +104,9 @@ class pengaturanKomunitas : Fragment() {
         binding.toDeleteCommunity.setOnClickListener {
             idCommunity?.let { id -> toDeleteCommunity(id) }
         }
+        binding.toResetSaldo.setOnClickListener {
+            idCommunity?.let { id -> toResetCommunity(id) }
+        }
 
         _handleLoading()
 
@@ -149,6 +152,33 @@ class pengaturanKomunitas : Fragment() {
     private fun changeDisplayName(idCommunity: String, newDisplayName: String) {
         crScope.launch {
             val obj = communityListVM.changeDisplayName(idCommunity, newDisplayName)
+            if (obj["status"] == true) {
+                showMessages(obj["message"].toString(), "success")
+            }else {
+                showMessages(obj["message"].toString(), "error")
+            }
+        }
+    }
+
+    private fun toResetCommunity(idCommunity: String) {
+        val builder = MaterialAlertDialogBuilder(context)
+        builder.setTitle("Reset Komunitas")
+        builder.setMessage("Anda yakin ingin Reset Komunitas?\nSeluruh data transaksi akan dibersihkan & saldo akan menjadi 0")
+        builder.setPositiveButton("Ya, Reset") { dialogInterface, i ->
+            if (FirestoreObj._sourceDynamic != Source.CACHE) {
+                resetCommunity(idCommunity)
+            }else {
+                showMessages("Anda harus terhubung ke jaringan", "error")
+            }
+        }
+        builder.setNegativeButton("Batal") { dialogInterface: DialogInterface, i: Int ->
+
+        }
+        builder.show()
+    }
+    private fun resetCommunity(idCommunity: String) {
+        crScope.launch {
+            val obj = communityListVM.resetCommunity(idCommunity)
             if (obj["status"] == true) {
                 showMessages(obj["message"].toString(), "success")
             }else {

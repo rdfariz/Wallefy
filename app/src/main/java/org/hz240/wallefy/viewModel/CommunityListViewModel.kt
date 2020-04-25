@@ -113,6 +113,14 @@ class CommunityListViewModel(val idCommunity: String?= null): ViewModel() {
         _loading.value = false
         return obj
     }
+    suspend fun resetCommunity(idCommunity: String): HashMap<String, Any?> {
+        _loading.value = true
+        val obj = CommunityObj.resetCommunity(idCommunity)
+        refresh()
+        _handlePendingState(obj)
+        _loading.value = false
+        return obj
+    }
 
     private fun _handlePendingState(obj: HashMap<String, Any?>) {
         if (obj["status"] == true) {
