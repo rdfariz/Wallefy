@@ -212,7 +212,6 @@ object ActivityObj {
             adminRef.forEach {
                 if (it == usrRef) {
                     isAdmin = true
-                    Log.i("tesADMIN", "1")
                     if (func is Unit) {
                         func
                         obj["status"] = true
@@ -222,14 +221,12 @@ object ActivityObj {
                         obj["status"] = response["status"]
                         obj["message"] = response["message"]
                     }
-                    Log.i("tesADMIN", "2")
                 }
             }
         }catch (e: Exception) {
             obj["status"] = false
             obj["message"] = messages["error"]
         }finally {
-            Log.i("tesADMIN", "3")
             if (isAdmin == false) {
                 obj["message"] = "Anda tidak punya akses mengatur komunitas"
             }

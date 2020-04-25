@@ -47,7 +47,6 @@ fun toggleLoading(item: androidx.constraintlayout.widget.ConstraintLayout, bool:
 @BindingAdapter("toggleLoading")
 fun toggleLoading(item: RelativeLayout, bool: Boolean) {
     item.bringToFront()
-    Log.i("tesBool", bool.toString())
     if (bool == true) {
         item.animate()
             .alpha(1.0f)

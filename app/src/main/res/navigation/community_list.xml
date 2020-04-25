@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/communityListFragment"
-        android:name="org.hz240.wallefy.communityList.communityListFragment"
+        android:name="org.hz240.wallefy.ui.communityList.communityListFragment"
         android:label="Daftar Komunitas"
         tools:layout="@layout/fragment_community_list">
         <action
@@ -27,7 +27,7 @@
     </fragment>
     <fragment
         android:id="@+id/joinCommunityFragment"
-        android:name="org.hz240.wallefy.communityList.joinCommunityFragment"
+        android:name="org.hz240.wallefy.ui.communityList.joinCommunityFragment"
         android:label="Join Komunitas"
         tools:layout="@layout/fragment_join_community" >
         <action
@@ -47,7 +47,7 @@
     </fragment>
     <fragment
         android:id="@+id/toCreateCommunity"
-        android:name="org.hz240.wallefy.communityList.createCommunityFragment"
+        android:name="org.hz240.wallefy.ui.communityList.createCommunityFragment"
         android:label="Buat Komunitas">
         <action
             android:id="@+id/action_createCommunityFragment_to_joinCommunityFragment"
