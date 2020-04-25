@@ -74,7 +74,8 @@ class pengaturanUser : Fragment() {
     fun changeDisplayName() {
         val builder = MaterialAlertDialogBuilder(context)
         val inflater = layoutInflater
-        builder.setTitle("Nama Akun")
+        builder.setTitle("Atur Nama Akun")
+        builder.setMessage("Inputkan nama akun kamu")
         val dialogLayout = inflater.inflate(R.layout.alert_dialog_display_name, null)
         val editText  = dialogLayout.findViewById<EditText>(R.id.et_displayName)
         editText.setText(userLoginVM.userLogin.value?.get("displayName").toString())

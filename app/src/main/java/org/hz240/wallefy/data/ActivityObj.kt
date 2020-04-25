@@ -50,12 +50,12 @@ object ActivityObj {
         val messages = hashMapOf<String, Any?>("success" to "Pemasukan berhasil dibersihkan", "error" to "Gagal membersihkan pemasukan komunitas")
         return middleWareAdmin(idCommunity, messages, exeClearPemasukan(idCommunity))
     }
-    private suspend fun exeClearPemasukan(idCommunity: String) {
+    suspend fun exeClearPemasukan(idCommunity: String) {
         val type = "pemasukan"
         val ref = db.collection("organisasi").document(idCommunity).collection("activity")
         val pemasukan = ref.whereEqualTo("type", type).get(FirestoreObj._sourceDynamic).await()
         pemasukan.forEach {
-            ref.document(it.id).delete().await()
+            exeDeleteTransaction(idCommunity, it.id)
         }
     }
 
@@ -63,12 +63,12 @@ object ActivityObj {
         val messages = hashMapOf<String, Any?>("success" to "Pengeluaran berhasil dibersihkan", "error" to "Gagal membersihkan pengeluaran komunitas")
         return middleWareAdmin(idCommunity, messages, exeClearPengeluaran(idCommunity))
     }
-    private suspend fun exeClearPengeluaran(idCommunity: String) {
+    suspend fun exeClearPengeluaran(idCommunity: String) {
         val type = "pengeluaran"
         val ref = db.collection("organisasi").document(idCommunity).collection("activity")
         val pemasukan = ref.whereEqualTo("type", type).get(FirestoreObj._sourceDynamic).await()
         pemasukan.forEach {
-            ref.document(it.id).delete().await()
+            exeDeleteTransaction(idCommunity, it.id)
         }
     }
 
@@ -77,14 +77,36 @@ object ActivityObj {
         return middleWareAdmin(idCommunity, messages, exeDeleteTransaction(idCommunity, idTransaction))
     }
     suspend fun exeDeleteTransaction(idCommunity: String, idTransaction: String) {
-        val ref = db.collection("organisasi").document(idCommunity).collection("activity").document(idTransaction)
-        ref.delete().await()
+        val org = db.collection("organisasi").document(idCommunity)
+        val ref = org.collection("activity").document(idTransaction)
+        val data = ref.get().await()
+        val biaya = data["biaya"] as Long
+        val type = data["type"] as String
+
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(org)
+            val saldo = snapshot!!["saldo"] as Long
+            if (type == "pemasukan") {
+                if (saldo - biaya >= 0) {
+                    transaction.update(org, "saldo", FieldValue.increment(-biaya))
+                } else {
+                    transaction.update(org, "saldo", 0)
+                }
+            }else {
+                transaction.update(org, "saldo", FieldValue.increment(biaya))
+            }
+            transaction.delete(ref)
+        }.await()
     }
 
 //  Person Interaction
-    suspend fun getPerson(idPerson: String): HashMap<String, Any?> {
+    suspend fun getPerson(idPerson: String): HashMap<String, Any?>? {
         val user = db.collection("users").document(idPerson).get().await()
-        return user.data as HashMap<String, Any?>
+        var obj: HashMap<String, Any?>? = null
+        if (user.exists()) {
+            obj = user.data as HashMap<String, Any?>?
+        }
+        return obj
     }
     suspend fun addPerson(idCommunity: String, idPerson: String): HashMap<String, Any?> {
         val messages = hashMapOf<String, Any?>("success" to "Berhasil menghapus transaksi", "error" to "Gagal menghapus transaksi komunitas")
