@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="dataCommunityViewModel" type="org.hz240.wallefy.communityList.CommunityListViewModel" />
+        <variable name="dataCommunityViewModel" type="org.hz240.wallefy.viewModel.CommunityListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

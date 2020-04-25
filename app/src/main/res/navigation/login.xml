@@ -5,6 +5,6 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="org.hz240.wallefy.login.loginFragment"
-        android:label="Login" />
+        android:name="org.hz240.wallefy.ui.login.loginFragment"
+        android:label="Login Akun" />
 </navigation>

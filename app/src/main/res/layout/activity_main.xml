@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/root_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity">
+        tools:context=".ui.main.MainActivity">
 
         <fragment
             android:layout_width="match_parent"
@@ -19,7 +19,6 @@
             app:navGraph="@navigation/navigation"
             tools:layout="@layout/fragment_dashboard">
         </fragment>
-
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
@@ -34,5 +33,5 @@
             app:itemTextColor="@drawable/bottom_navigation_view_item_tint"
             app:menu="@menu/bottom_navigation"/>
 
-    </FrameLayout>
+    </RelativeLayout>
 </layout>
