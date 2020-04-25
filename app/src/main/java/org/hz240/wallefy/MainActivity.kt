@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRecei
         if (!isConnected) {
             snackbar?.dismiss()
             FirestoreObj.changeSource(Source.CACHE)
-            snackbar = Snackbar.make(findViewById(R.id.root_layout), "You are offline", Snackbar.LENGTH_SHORT) //Assume "rootLayout" as the root layout of every activity
+            snackbar = Snackbar.make(findViewById(R.id.root_layout), "Kamu harus terhubung ke jaringan", Snackbar.LENGTH_SHORT) //Assume "rootLayout" as the root layout of every activity
             snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.colorAccent))
             snackbar?.show()
         } else if (isConnected) {

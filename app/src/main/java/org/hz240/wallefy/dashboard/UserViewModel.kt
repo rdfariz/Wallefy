@@ -34,17 +34,11 @@ class UserViewModel: ViewModel() {
         }
     }
 
-    suspend fun changeDisplayName(newData: String) {
-        try {
-            _loading.value = true
-            Log.i("tesLoad1", _loading.value.toString())
-            AuthUserObj.setDisplayName(newData)
-        }catch (e: Exception) {
-
-        }finally {
-            _loading.value = false
-            Log.i("tesLoad2", _loading.value.toString())
-        }
+    suspend fun changeDisplayName(newData: String): HashMap<String, Any?> {
+        _loading.value = true
+        val obj = AuthUserObj.setDisplayName(newData)
+        _loading.value = false
+        return obj
     }
 
     override fun onCleared() {

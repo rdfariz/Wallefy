@@ -3,34 +3,23 @@
 xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools">
 
-
-<androidx.drawerlayout.widget.DrawerLayout
-    android:id="@+id/root_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".communityList.CommunityListActivity">
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
-    <fragment
+        android:id="@+id/root_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bottom_navigation"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:id="@+id/nav_host_fragment_container"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/community_list"
-        tools:layout="@layout/fragment_community_list">
-    </fragment>
+        tools:context=".communityList.CommunityListActivity">
+
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottom_navigation"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:id="@+id/nav_host_fragment_container"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/community_list"
+            tools:layout="@layout/fragment_community_list">
+        </fragment>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <com.google.android.material.navigation.NavigationView
-        android:layout_gravity="start"
-        android:id="@+id/navView"
-        app:menu="@menu/drawer_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"/>
-
-</androidx.drawerlayout.widget.DrawerLayout>
 </layout>

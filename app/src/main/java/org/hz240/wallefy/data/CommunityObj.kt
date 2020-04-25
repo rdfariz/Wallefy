@@ -78,19 +78,128 @@ object CommunityObj {
             val docRef = db.collection("organisasi").document(id)
             val usrRef = db.collection("users").document(uid)
             val check = docRef.get(FirestoreObj._sourceDynamic).await()
-            val arr = check.data!!["members"] as ArrayList<DocumentReference>
-            if(arr.contains(usrRef)) {
+
+            if (check.data!!["lock"] as Boolean == true) {
                 obj["status"] = false
-                obj["message"] = "Maaf, kamu sudah bergabung"
+                obj["message"] = "Maaf, komunitas tidak menerima anggota lagi"
             }else {
-                obj["status"] = true
-                obj["message"] = "Bergabung dengan ${check.data!!["displayName"].toString()}"
-                val upd = docRef.update("members", FieldValue.arrayUnion(usrRef)).await()
+                val arr = check.data!!["members"] as ArrayList<DocumentReference>
+                if(arr.contains(usrRef)) {
+                    obj["status"] = false
+                    obj["message"] = "Maaf, kamu sudah bergabung"
+                }else {
+                    obj["status"] = true
+                    obj["message"] = "Bergabung dengan ${check.data!!["displayName"].toString()}"
+                    val upd = docRef.update("members", FieldValue.arrayUnion(usrRef)).await()
+                }
             }
         }catch (e: Exception) {
             obj["status"] = false
             obj["message"] = "Tidak bisa join ke komunitas"
         }finally {
+            return obj
+        }
+    }
+    suspend fun createCommunity(displayName: String): HashMap<String, Any?> {
+        var obj = hashMapOf<String, Any?>("status" to false, "message" to null)
+        try {
+            val uid = FirestoreObj._auth.currentUser?.uid.toString()
+            val usrRef = db.collection("users").document(uid)
+            val data = hashMapOf<String, Any?>(
+                "displayName" to displayName,
+                "lock" to false,
+                "admin" to arrayListOf(usrRef),
+                "members" to arrayListOf(usrRef),
+                "saldo" to 0
+            )
+            val create = db.collection("organisasi").add(data).await()
+            obj["status"] = true
+            obj["message"] = "Berhasil membuat komunitas ${displayName}"
+        }catch (e: Exception) {
+            obj["status"] = false
+            obj["message"] = "Gagal membuat komunitas"
+        }finally {
+            return obj
+        }
+    }
+    suspend fun deleteCommunity(idCommunity: String): HashMap<String, Any?> {
+        val obj = hashMapOf<String, Any?>("status" to false, "message" to null)
+        var isAdmin = false
+        try {
+            val uid = FirestoreObj._auth.currentUser?.uid.toString()
+            val usrRef = db.collection("users").document(uid)
+            val ref = db.collection("organisasi").document(idCommunity)
+            val community = ref.get().await()
+            val adminRef = community.data?.get("admin") as ArrayList<DocumentReference>
+            adminRef.forEach {
+                if (it == usrRef) {
+                    isAdmin = true
+                    ref.delete().await()
+                    obj["status"] = true
+                    obj["message"] = "Komunitas ${community.data?.get("displayName")} berhasil dihapus"
+                }
+            }
+        }catch (e: Exception) {
+            obj["status"] = false
+            obj["message"] = "Gagal menghapus komunitas"
+        }finally {
+            if (isAdmin == false) {
+                obj["message"] = "Anda tidak punya akses mengatur komunitas"
+            }
+            return obj
+        }
+    }
+    suspend fun changeDisplayName(idCommunity: String, displayName: String): HashMap<String, Any?> {
+        val obj = hashMapOf<String, Any?>("status" to false, "message" to null)
+        var isAdmin = false
+        try {
+            val uid = FirestoreObj._auth.currentUser?.uid.toString()
+            val usrRef = db.collection("users").document(uid)
+            val ref = db.collection("organisasi").document(idCommunity)
+            val community = ref.get().await()
+            val adminRef = community.data?.get("admin") as ArrayList<DocumentReference>
+            adminRef.forEach {
+                if (it == usrRef) {
+                    isAdmin = true
+                    ref.update("displayName", displayName).await()
+                    obj["status"] = true
+                    obj["message"] = "Komunitas berhasil diupdate"
+                }
+            }
+        }catch (e: Exception) {
+            obj["status"] = false
+            obj["message"] = "Gagal mengupdate komunitas"
+        }finally {
+            if (isAdmin == false) {
+                obj["message"] = "Anda tidak punya akses mengatur komunitas"
+            }
+            return obj
+        }
+    }
+    suspend fun setLock(idCommunity: String, state: Boolean): HashMap<String, Any?> {
+        val obj = hashMapOf<String, Any?>("status" to false, "message" to null)
+        var isAdmin = false
+        try {
+            val uid = FirestoreObj._auth.currentUser?.uid.toString()
+            val usrRef = db.collection("users").document(uid)
+            val ref = db.collection("organisasi").document(idCommunity)
+            val community = ref.get().await()
+            val adminRef = community.data?.get("admin") as ArrayList<DocumentReference>
+            adminRef.forEach {
+                if (it == usrRef) {
+                    isAdmin = true
+                    ref.update("lock", state).await()
+                    obj["status"] = true
+                    obj["message"] = "Komunitas berhasil diupdate"
+                }
+            }
+        }catch (e: Exception) {
+            obj["status"] = false
+            obj["message"] = "Gagal mengupdate komunitas"
+        }finally {
+            if (isAdmin == false) {
+                obj["message"] = "Anda tidak punya akses mengatur komunitas"
+            }
             return obj
         }
     }
@@ -300,10 +409,15 @@ object CommunityObj {
             if(org.data!!["displayName"] != null) {
                 displayName = org.data!!["displayName"].toString()
             }
+            var lock: Boolean? = null
+            if(org.data!!["lock"] != null) {
+                lock = org.data!!["lock"] as Boolean
+            }
 
 //          Make Obj
             doc = hashMapOf(
                 "idCommunity" to org.id,
+                "lock" to lock,
                 "displayName" to displayName,
                 "saldo" to saldo,
                 "members" to _members,
@@ -314,12 +428,12 @@ object CommunityObj {
                 "isAdmin" to isAdmin
             )
         }catch (e: Exception) {
-            Log.i("teserr", e.message.toString())
             if (sessionSingle != null) {
                 doc = sessionSingle as HashMap<String, Any?>
             }else {
                 doc = hashMapOf(
                     "idCommunity" to null,
+                    "lock" to null,
                     "displayName" to "-",
                     "saldo" to "-",
                     "members" to ArrayList<HashMap<String, Any>>(),

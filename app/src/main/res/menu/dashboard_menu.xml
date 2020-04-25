@@ -2,9 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/to_showId"
-        android:title="Lihat ID Saya" />
+        android:id="@+id/to_showProfileCommunity"
+        android:title="Lihat Profil Komunitas" />
     <item
         android:id="@+id/to_communityList"
-        android:title="Kembali" />
+        android:title="Kembali Ke Daftar Komunitas" />
+
 </menu>

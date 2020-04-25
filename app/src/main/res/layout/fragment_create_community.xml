@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable name="dataCommunityViewModel" type="org.hz240.wallefy.communityList.CommunityListViewModel" />
@@ -11,7 +11,7 @@
         android:id="@+id/root_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".communityList.joinCommunityFragment">
+        tools:context=".communityList.createCommunityFragment">
 
         <ScrollView
             android:id="@+id/header"
@@ -23,14 +23,14 @@
 
                 <ImageView
                     android:id="@+id/imageView2"
-                    android:layout_gravity="center"
                     android:layout_marginTop="32dp"
+                    android:layout_gravity="center"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:src="@drawable/ic_undraw_memory_storage_reh0"/>
+                    android:src="@drawable/ic_undraw_new_entries_nh3h"/>
 
                 <TextView
                     android:id="@+id/tv_header"
@@ -38,11 +38,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:gravity="center"
-                    android:text="Inputkan kode komunitas kamu"
+                    android:text="Inputkan nama komunitas yang ingin kamu buat"
                     android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="@+id/imageView2"
                     app:layout_constraintStart_toStartOf="@+id/imageView2"
                     app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/container_et_code"
@@ -51,7 +52,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Kode Komunitas"
+                    android:hint="Nama Komunitas"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_header">
@@ -64,13 +65,13 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
-                    android:id="@+id/joinCommunity"
+                    android:id="@+id/createCommunity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginBottom="36dp"
-                    android:text="Cari komunitas"
+                    android:text="Buat Komunitas"
                     app:layout_constraintEnd_toEndOf="@+id/container_et_code"
                     app:layout_constraintStart_toStartOf="@+id/container_et_code"
                     app:layout_constraintTop_toBottomOf="@+id/container_et_code"

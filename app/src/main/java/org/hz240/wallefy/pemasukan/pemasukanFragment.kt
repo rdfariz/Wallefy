@@ -1,18 +1,18 @@
 package org.hz240.wallefy.pemasukan
 
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
@@ -20,14 +20,14 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import org.hz240.wallefy.R
 import org.hz240.wallefy.communityList.CommunityListActivity
 import org.hz240.wallefy.communityList.CommunityListViewModel
 import org.hz240.wallefy.dashboard.TransactionsAdapter
-import org.hz240.wallefy.data.AuthUserObj
+import org.hz240.wallefy.data.GlobalObj
 import org.hz240.wallefy.databinding.FragmentPemasukanBinding
-import org.hz240.wallefy.login.LoginActivity
 import org.hz240.wallefy.viewModel.ActivityViewModel
 
 
@@ -60,6 +60,8 @@ class pemasukanFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (arguments?.getBoolean("onRefresh") == true) {
+            refresh()
+        }else if (GlobalObj.getPending() == true) {
             refresh()
         }
     }
@@ -134,9 +136,22 @@ class pemasukanFragment : Fragment() {
             it.findNavController()?.navigate(R.id.action_pemasukan_to_tambahPemasukan)
         }
 
+        _handleInitLoading()
         _handleLoading()
 
         return binding.root
+    }
+
+    private fun showMessages(message: String, type: String) {
+        var snackbar: Snackbar? = null
+        snackbar = Snackbar.make(binding.root.rootView.findViewById(R.id.root_layout), message, Snackbar.LENGTH_SHORT)
+        var color = when(type) {
+            "success" -> R.color.green
+            "error" -> R.color.colorAccent
+            else -> R.color.colorPrimary
+        }
+        snackbar.setBackgroundTint(ResourcesCompat.getColor(resources, color, null))
+        snackbar?.show()
     }
 
     private fun refresh() {
@@ -180,9 +195,9 @@ class pemasukanFragment : Fragment() {
         alertDialogBuilder.setView(dialogLayout)
         dialog = alertDialogBuilder.create()
 
-        dialogLayout.findViewById<TextView>(R.id.tv_title_transaction).text = title
-        dialogLayout.findViewById<TextView>(R.id.tv_type_transaction).text = type
-        dialogLayout.findViewById<TextView>(R.id.tv_biaya_transaction).text = biaya
+        dialogLayout.findViewById<TextView>(R.id.tv_title_transaction).text = "Transaksi: ${title.capitalize()}"
+        dialogLayout.findViewById<TextView>(R.id.tv_type_transaction).text = "Jenis: ${type.capitalize()}"
+        dialogLayout.findViewById<TextView>(R.id.tv_biaya_transaction).text = "Biaya: ${biaya}"
         dialogLayout.findViewById<Button>(R.id.to_delete_transactions).setOnClickListener {
             idCommunity?.let { id ->
                 toDeleteTransaction(id, idTransaction, title)
@@ -196,15 +211,29 @@ class pemasukanFragment : Fragment() {
         alertDialogBuilder.setTitle("Hapus Transaksi")
         alertDialogBuilder.setMessage("Anda yakin ingin menghapus Transaksi ${title}")
         alertDialogBuilder.setPositiveButton("Hapus") { dialogInterface: DialogInterface, i: Int ->
-            crScope.launch {
-                activityVM.deleteTransaction(idCommunity, idTransaction)
-                refresh()
-            }
+            exeDeleteTransaction(idCommunity, idTransaction)
         }
         alertDialogBuilder.setNegativeButton("Batal") { dialogInterface: DialogInterface, i: Int ->
 
         }
         alertDialogBuilder.show()
+    }
+    private fun exeDeleteTransaction(idCommunity: String, idTransaction: String) {
+        crScope.launch {
+            try {
+                val obj = activityVM.deleteTransaction(idCommunity, idTransaction)
+                if (obj["status"] == true) {
+                    showMessages(obj["message"].toString(), "success")
+                    refresh()
+                }else {
+                    showMessages(obj["message"].toString(), "error")
+                }
+            }catch (e: Exception) {
+
+            }finally {
+
+            }
+        }
     }
 
     private fun toClearPemasukan() {
@@ -221,9 +250,20 @@ class pemasukanFragment : Fragment() {
     }
     private fun clearPemasukan() {
         crScope.launch {
-            idCommunity?.let {
-                activityVM.clearPemasukan(it)
-                refresh()
+            try {
+                idCommunity?.let {
+                    val obj = activityVM.clearPemasukan(it)
+                    if (obj["status"] == true) {
+                        showMessages(obj["message"].toString(), "success")
+                        refresh()
+                    }else {
+                        showMessages(obj["message"].toString(), "error")
+                    }
+                }
+            }catch (e: Exception) {
+
+            }finally {
+
             }
         }
     }
@@ -239,6 +279,25 @@ class pemasukanFragment : Fragment() {
         val dialog = alertDialogBuilder.create()
 
         activityVM.loading.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                dialog.show()
+            }else {
+                dialog.dismiss()
+            }
+        })
+    }
+
+    fun _handleInitLoading() {
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
+        val inflater = layoutInflater
+        val dialogLayout = inflater.inflate(R.layout.alert_dialog_loading, null)
+
+        alertDialogBuilder.setTitle("Menyiapkan Data")
+        alertDialogBuilder.setCancelable(false)
+        alertDialogBuilder.setView(dialogLayout)
+        val dialog = alertDialogBuilder.create()
+
+        communityListVM.loading.observe(viewLifecycleOwner, Observer {
             if (it == true) {
                 dialog.show()
             }else {

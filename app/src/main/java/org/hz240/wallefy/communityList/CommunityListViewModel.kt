@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
 import org.hz240.wallefy.data.CommunityObj
+import org.hz240.wallefy.data.GlobalObj
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -39,7 +40,9 @@ class CommunityListViewModel(val idCommunity: String?= null): ViewModel() {
         _loading.value = false
     }
     suspend fun refresh(): Boolean {
-        _loadingRefresh.value = true
+        if (GlobalObj.getPending() == true) { _loading.value = true }
+        else { _loadingRefresh.value = true }
+
         var found = false
         if (idCommunity != null) {
             found = CommunityObj.checkUserLoginInCommunity(idCommunity.toString())
@@ -52,7 +55,10 @@ class CommunityListViewModel(val idCommunity: String?= null): ViewModel() {
         }else {
             found = false
         }
+
+        _loading.value = false
         _loadingRefresh.value = false
+        GlobalObj.setPending(false)
         return found
     }
     suspend fun checkIfMember(idCommunity: String):Boolean {
@@ -78,6 +84,42 @@ class CommunityListViewModel(val idCommunity: String?= null): ViewModel() {
         val obj = CommunityObj.checkCommunity(idCommunity)
         _loading.value = false
         return obj
+    }
+    suspend fun createCommunity(displayName: String): HashMap<String, Any?> {
+        _loading.value = true
+        val obj = CommunityObj.createCommunity(displayName)
+        _loading.value = false
+        return obj
+    }
+    suspend fun deleteCommunity(idCommunity: String): HashMap<String, Any?> {
+        _loading.value = true
+        val obj = CommunityObj.deleteCommunity(idCommunity)
+        _loading.value = false
+        return obj
+    }
+    suspend fun changeDisplayName(idCommunity: String, displayName: String): HashMap<String, Any?> {
+        _loading.value = true
+        val obj = CommunityObj.changeDisplayName(idCommunity, displayName)
+        refresh()
+        _handlePendingState(obj)
+        _loading.value = false
+        return obj
+    }
+    suspend fun setLock(idCommunity: String, state: Boolean): HashMap<String, Any?> {
+        _loading.value = true
+        val obj = CommunityObj.setLock(idCommunity, state)
+        refresh()
+        _handlePendingState(obj)
+        _loading.value = false
+        return obj
+    }
+
+    private fun _handlePendingState(obj: HashMap<String, Any?>) {
+        if (obj["status"] == true) {
+            GlobalObj.setPending(true)
+        }else {
+            GlobalObj.setPending(false)
+        }
     }
 
 

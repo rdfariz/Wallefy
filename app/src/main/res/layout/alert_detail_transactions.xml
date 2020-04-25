@@ -21,14 +21,13 @@
 
         <TextView
             android:id="@+id/tv_title_transaction"
-            android:layout_marginTop="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="Judul Transaksi"
             android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="@+id/iv_type_transaction"
-            app:layout_constraintStart_toStartOf="@+id/iv_type_transaction"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_type_transaction" />
         <TextView
             android:id="@+id/tv_type_transaction"
@@ -38,7 +37,6 @@
             android:gravity="center"
             android:text="Tipe Transaksi"
             android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="@+id/tv_title_transaction"
             app:layout_constraintStart_toStartOf="@+id/tv_title_transaction"
             app:layout_constraintTop_toBottomOf="@+id/tv_title_transaction" />
 
@@ -50,7 +48,6 @@
             android:gravity="center"
             android:text="Biaya Transaksi"
             android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="@+id/tv_type_transaction"
             app:layout_constraintStart_toStartOf="@+id/tv_type_transaction"
             app:layout_constraintTop_toBottomOf="@+id/tv_type_transaction" />
 
@@ -62,7 +59,6 @@
             android:layout_marginTop="16dp"
             android:text="Hapus Transaksi Ini"
             app:backgroundTint="@color/colorAccent"
-            app:layout_constraintEnd_toEndOf="@+id/tv_biaya_transaction"
             app:layout_constraintStart_toStartOf="@+id/tv_biaya_transaction"
             app:layout_constraintTop_toBottomOf="@+id/tv_biaya_transaction"></Button>
     </androidx.constraintlayout.widget.ConstraintLayout>

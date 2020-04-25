@@ -1,25 +1,24 @@
 package org.hz240.wallefy.pemasukan
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.firebase.firestore.FieldValue
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,10 +26,9 @@ import kotlinx.coroutines.launch
 
 import org.hz240.wallefy.R
 import org.hz240.wallefy.communityList.CommunityListActivity
-import org.hz240.wallefy.communityList.CommunityListViewModel
-import org.hz240.wallefy.data.ActivityObj
-import org.hz240.wallefy.databinding.FragmentPemasukanBinding
+import org.hz240.wallefy.data.GlobalObj
 import org.hz240.wallefy.databinding.FragmentTambahPemasukanBinding
+import org.hz240.wallefy.utils.FirestoreObj
 import org.hz240.wallefy.viewModel.ActivityViewModel
 
 /**
@@ -66,12 +64,28 @@ class tambahPemasukan : Fragment() {
 
         binding.pushItem.setOnClickListener {
             hideKeyboard()
-            addPemasukan(idCommunity.toString())
+            if (FirestoreObj._sourceDynamic == Source.CACHE) {
+                showMessages("Anda harus terhubung ke jaringan", "error")
+            }else {
+                addPemasukan(idCommunity.toString())
+            }
         }
 
         _handleLoading()
 
         return binding.root
+    }
+
+    private fun showMessages(message: String, type: String) {
+        var snackbar: Snackbar? = null
+        snackbar = Snackbar.make(binding.root.rootView.findViewById(R.id.root_layout), message, Snackbar.LENGTH_SHORT)
+        var color = when(type) {
+            "success" -> R.color.green
+            "error" -> R.color.colorAccent
+            else -> R.color.colorPrimary
+        }
+        snackbar.setBackgroundTint(ResourcesCompat.getColor(resources, color, null))
+        snackbar?.show()
     }
 
     override fun onPause() {
@@ -82,9 +96,14 @@ class tambahPemasukan : Fragment() {
     fun addPemasukan(idCommunity: String) {
         crScope.launch {
             try {
-                activityVM.addPemasukan(idCommunity, binding.etTitle.text.toString(), Integer.parseInt(binding.etBiaya.text.toString()).toLong())
-                val bundle = bundleOf("onRefresh" to true)
-                view?.findNavController()?.navigate(R.id.action_tambahPemasukan_to_pemasukan, bundle)
+                val obj = activityVM.addPemasukan(idCommunity, binding.etTitle.text.toString(), Integer.parseInt(binding.etBiaya.text.toString()).toLong())
+                if (obj["status"] == true) {
+                    showMessages(obj["message"].toString(), "success")
+                    GlobalObj.setPending(true)
+                    activity?.onBackPressed()
+                }else {
+                    showMessages(obj["message"].toString(), "error")
+                }
             }catch (e: Exception) {
 
             }finally {

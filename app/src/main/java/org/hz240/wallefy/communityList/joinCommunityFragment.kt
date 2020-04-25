@@ -1,12 +1,13 @@
 package org.hz240.wallefy.communityList
 
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
+import android.view.*
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
@@ -18,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.Source
 import kotlinx.coroutines.*
 import org.hz240.wallefy.R
+import org.hz240.wallefy.data.GlobalObj
 import org.hz240.wallefy.databinding.FragmentJoinCommunityBinding
 import org.hz240.wallefy.utils.FirestoreObj
 
@@ -44,18 +46,18 @@ class joinCommunityFragment : Fragment() {
         binding.dataCommunityViewModel = communityListVM
 
         binding.joinCommunity.setOnClickListener {
+            hideKeyboard()
             if (FirestoreObj._sourceDynamic == Source.CACHE) {
-                var snackbar: Snackbar? = null
-                snackbar = Snackbar.make(binding.root.rootView.findViewById(R.id.root_layout), "You are offline", Snackbar.LENGTH_SHORT) //Assume "rootLayout" as the root layout of every activity
-                snackbar.setBackgroundTint(ResourcesCompat.getColor(resources, R.color.colorAccent, null))
-                snackbar?.show()
+                showMessages("Kamu harus terhubung ke jaringan", "error")
+            }else if(binding.etCode.text.toString().length <= 0 || binding.etCode.text.toString() == "" || binding.etCode.text == null) {
+                showMessages("Kode Komunitas tidak boleh kosong", "error")
             }else {
                 crScope.launch {
                     val community = communityListVM.checkCommunity(binding.etCode.text.toString())
                     if (community["found"] == true) {
                         joinCommunity(community["displayName"].toString(), community["message"].toString())
                     }else {
-                        Toast.makeText(context, community["message"].toString(), Toast.LENGTH_SHORT).show()
+                        showMessages(community["message"].toString(), "error")
                     }
                 }
             }
@@ -66,6 +68,23 @@ class joinCommunityFragment : Fragment() {
         return binding.root
     }
 
+    override fun onPause() {
+        hideKeyboard()
+        super.onPause()
+    }
+
+    private fun showMessages(message: String, type: String) {
+        var snackbar: Snackbar? = null
+        snackbar = Snackbar.make(binding.root.rootView.findViewById(R.id.root_layout), message, Snackbar.LENGTH_SHORT)
+        var color = when(type) {
+            "success" -> R.color.green
+            "error" -> R.color.colorAccent
+            else -> R.color.colorPrimary
+        }
+        snackbar.setBackgroundTint(ResourcesCompat.getColor(resources, color, null))
+        snackbar?.show()
+    }
+
     suspend fun joinCommunity(title: String, message: String) {
         val alertDialogBuilder = MaterialAlertDialogBuilder(context)
         alertDialogBuilder.setTitle(title)
@@ -74,10 +93,11 @@ class joinCommunityFragment : Fragment() {
             crScope.launch {
                 val obj = communityListVM.joinCommunity(binding.etCode.text.toString())
                 if (obj["status"] == true) {
-                    Toast.makeText(context, obj["message"].toString(), Toast.LENGTH_SHORT).show()
-                    view?.findNavController()?.navigate(R.id.action_joinCommunityFragment_to_communityListFragment)
+                    showMessages(obj["message"].toString(), "success")
+                    GlobalObj.setPending(true)
+                    activity?.onBackPressed()
                 }else {
-                    Toast.makeText(context, obj["message"].toString(), Toast.LENGTH_SHORT).show()
+                    showMessages(obj["message"].toString(), "error")
                 }
             }
         }
@@ -104,6 +124,16 @@ class joinCommunityFragment : Fragment() {
                 dialog.dismiss()
             }
         })
+    }
+    fun Fragment.hideKeyboard() {
+        view?.let { activity?.hideKeyboard(it) }
+    }
+    fun Activity.hideKeyboard() {
+        hideKeyboard(currentFocus ?: View(this))
+    }
+    fun Context.hideKeyboard(view: View) {
+        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     override fun onDestroy() {

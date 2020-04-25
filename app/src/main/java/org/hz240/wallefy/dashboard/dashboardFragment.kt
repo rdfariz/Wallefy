@@ -1,31 +1,32 @@
 package org.hz240.wallefy.dashboard
 
-import android.app.AlertDialog
 import android.content.*
 import android.content.Context.CLIPBOARD_SERVICE
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.*
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
 import org.hz240.wallefy.R
 import org.hz240.wallefy.communityList.CommunityListActivity
 import org.hz240.wallefy.communityList.CommunityListViewModel
+import org.hz240.wallefy.data.GlobalObj
 import org.hz240.wallefy.databinding.FragmentDashboardBinding
+import org.hz240.wallefy.pengaturan.SettingsActivity
 import org.hz240.wallefy.utils.FirestoreObj
+import org.hz240.wallefy.utils.FormatText
 import org.hz240.wallefy.viewModel.ActivityViewModel
-import java.lang.Exception
 
 /**
  * A simple [Fragment] subclass.
@@ -54,12 +55,18 @@ class dashboardFragment : Fragment() {
     private var myClipboard: ClipboardManager? = null
 
     private val isAdmin = MutableLiveData<Boolean>()
+    private var displayNameAccount : String? = null
+    private var displayName : String? = null
     private var idCommunity : String? = null
+    private var lock: Boolean? = null
 
     override fun onResume() {
         super.onResume()
         crScope.launch {
             userLoginVM.migrateData()
+        }
+        if (GlobalObj.getPending() == true) {
+            refresh()
         }
     }
 
@@ -107,6 +114,8 @@ class dashboardFragment : Fragment() {
         communityListVM.communitySingle.observe(viewLifecycleOwner, Observer {
             val latestTransactions = it!!["latestTransactions"] as ArrayList<HashMap<String, Any?>>
             isAdmin.value = it!!["isAdmin"] as Boolean?
+            displayName = it!!["displayName"] as String?
+            lock = it!!["lock"] as Boolean
             if (latestTransactions.size == 0) {
                 binding.latestTransactionsSection.visibility = View.INVISIBLE
                 binding.emptyView.visibility = View.VISIBLE
@@ -135,15 +144,17 @@ class dashboardFragment : Fragment() {
         val picasso = Picasso.get()
         userLoginVM.userLogin.observe(viewLifecycleOwner, Observer {
             var photoUrl = it?.get("photoUrl").toString()
+            displayNameAccount = it?.get("displayName").toString()
             picasso.load(photoUrl).placeholder(R.drawable.ic_person_white_24dp).error(R.drawable.ic_person_white_24dp).into(binding.ivUserImage)
         })
 
-        binding.btnSetting.setOnClickListener {view: View ->
-            try {
-                view.findNavController().navigate(R.id.action_to_dashboard_to_pengaturanFragment)
-            }catch (e: Exception) {
-                Toast.makeText(this.context, "Ada kesalahan akses", Toast.LENGTH_SHORT).show()
-            }
+
+        binding.toSettings.setOnClickListener {
+            val intent = Intent(context, SettingsActivity::class.java)
+            context?.startActivity(intent)
+        }
+        binding.profileSection.setOnClickListener {
+            showInfoId()
         }
 
         binding.itemsswipetorefresh.setColorSchemeResources(R.color.colorPrimary)
@@ -155,6 +166,18 @@ class dashboardFragment : Fragment() {
         _handleLoading()
 
         return binding.root
+    }
+
+    private fun showMessages(message: String, type: String) {
+        var snackbar: Snackbar? = null
+        snackbar = Snackbar.make(binding.root.rootView.findViewById(R.id.root_layout), message, Snackbar.LENGTH_SHORT)
+        var color = when(type) {
+            "success" -> R.color.green
+            "error" -> R.color.colorAccent
+            else -> R.color.colorPrimary
+        }
+        snackbar.setBackgroundTint(ResourcesCompat.getColor(resources, color, null))
+        snackbar?.show()
     }
 
     private fun refresh() {
@@ -183,8 +206,12 @@ class dashboardFragment : Fragment() {
         val type = transaction["type"].toString()
         val biaya = transaction["biaya"].toString()
         when(type) {
-            "pemasukan" -> dialogLayout.findViewById<ImageView>(R.id.iv_type_transaction).setImageResource(R.drawable.ic_undraw_savings_dwkw)
-            "pengeluaran" -> dialogLayout.findViewById<ImageView>(R.id.iv_type_transaction).setImageResource(R.drawable.ic_undraw_result_5583)
+            "pemasukan" -> {
+                dialogLayout.findViewById<ImageView>(R.id.iv_type_transaction).setImageResource(R.drawable.ic_undraw_savings_dwkw)
+            }
+            "pengeluaran" -> {
+                dialogLayout.findViewById<ImageView>(R.id.iv_type_transaction).setImageResource(R.drawable.ic_undraw_result_5583)
+            }
         }
 
         isAdmin.observe(viewLifecycleOwner, Observer {
@@ -198,9 +225,9 @@ class dashboardFragment : Fragment() {
         alertDialogBuilder.setView(dialogLayout)
         dialog = alertDialogBuilder.create()
 
-        dialogLayout.findViewById<TextView>(R.id.tv_title_transaction).text = title
-        dialogLayout.findViewById<TextView>(R.id.tv_type_transaction).text = type
-        dialogLayout.findViewById<TextView>(R.id.tv_biaya_transaction).text = biaya
+        dialogLayout.findViewById<TextView>(R.id.tv_title_transaction).text = "Transaksi: ${title.capitalize()}"
+        dialogLayout.findViewById<TextView>(R.id.tv_type_transaction).text = "Jenis: ${type.capitalize()}"
+        dialogLayout.findViewById<TextView>(R.id.tv_biaya_transaction).text = "Biaya: ${biaya}"
         dialogLayout.findViewById<Button>(R.id.to_delete_transactions).setOnClickListener {
             idCommunity?.let { id ->
                 toDeleteTransaction(id, idTransaction, title)
@@ -214,15 +241,29 @@ class dashboardFragment : Fragment() {
         alertDialogBuilder.setTitle("Hapus Transaksi")
         alertDialogBuilder.setMessage("Anda yakin ingin menghapus Transaksi ${title}")
         alertDialogBuilder.setPositiveButton("Hapus") { dialogInterface: DialogInterface, i: Int ->
-            crScope.launch {
-                activityVM.deleteTransaction(idCommunity, idTransaction)
-                refresh()
-            }
+            exeDeleteTransaction(idCommunity, idTransaction)
         }
         alertDialogBuilder.setNegativeButton("Batal") { dialogInterface: DialogInterface, i: Int ->
 
         }
         alertDialogBuilder.show()
+    }
+    private fun exeDeleteTransaction(idCommunity: String, idTransaction: String) {
+        crScope.launch {
+            try {
+                val obj = activityVM.deleteTransaction(idCommunity, idTransaction)
+                if (obj["status"] == true) {
+                    showMessages(obj["message"].toString(), "success")
+                    refresh()
+                }else {
+                    showMessages(obj["message"].toString(), "error")
+                }
+            }catch (e: Exception) {
+
+            }finally {
+
+            }
+        }
     }
 
     fun _handleLoading() {
@@ -265,19 +306,29 @@ class dashboardFragment : Fragment() {
 
     private fun showInfoId() {
         val alertDialogBuilder = MaterialAlertDialogBuilder(context)
-        alertDialogBuilder.setTitle("ID Saya")
-        alertDialogBuilder.setMessage(FirestoreObj._auth.uid.toString())
+        alertDialogBuilder.setTitle("Info Akun")
+        alertDialogBuilder.setMessage("Nama: ${displayNameAccount}\nID: ${FirestoreObj._auth.currentUser?.uid.toString()}\n\nEmail: ${FirestoreObj._auth.currentUser?.email.toString()}")
         alertDialogBuilder.setCancelable(true)
         alertDialogBuilder.setPositiveButton("Salin ID") { dialogInterface: DialogInterface, i: Int ->
-            copy(FirestoreObj._auth.uid.toString())
+            copy(FirestoreObj._auth.uid.toString(), "ID")
+        }
+        alertDialogBuilder.show()
+    }
+    private fun showInfoCommunity() {
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
+        alertDialogBuilder.setTitle("Info Komunitas")
+        alertDialogBuilder.setMessage("Nama: ${displayName}\nID: ${idCommunity}\n\n*${lock?.let { FormatText().printStatusLock(it) }}")
+        alertDialogBuilder.setCancelable(true)
+        alertDialogBuilder.setPositiveButton("Salin ID") { dialogInterface: DialogInterface, i: Int ->
+            idCommunity?.let { copy(it, "ID Komunitas") }
         }
         alertDialogBuilder.show()
     }
 
-    private fun copy(txt: String) {
-        val myClip = ClipData.newPlainText("ID User", txt)
+    private fun copy(txt: String, label: String) {
+        val myClip = ClipData.newPlainText(label, txt)
         myClipboard?.setPrimaryClip(myClip)
-        Toast.makeText(context, "ID Berhasil disalin", Toast.LENGTH_SHORT).show();
+        showMessages("${label} Berhasil disalin", "success")
     }
 
 
@@ -288,7 +339,7 @@ class dashboardFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
-            R.id.to_showId -> showInfoId()
+            R.id.to_showProfileCommunity -> showInfoCommunity()
             R.id.to_communityList -> {
                 val intent = Intent(context, CommunityListActivity::class.java)
                 intent.flags =  Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
