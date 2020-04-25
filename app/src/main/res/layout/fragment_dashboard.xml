@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="dataUsersViewModel" type="org.hz240.wallefy.dashboard.UserViewModel" />
-        <variable name="dataCommunityViewModel" type="org.hz240.wallefy.communityList.CommunityListViewModel" />
+        <variable name="dataUsersViewModel" type="org.hz240.wallefy.viewModel.UserViewModel" />
+        <variable name="dataCommunityViewModel" type="org.hz240.wallefy.viewModel.CommunityListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFFFF"
-        tools:context=".dashboard.dashboardFragment">
+        tools:context=".ui.main.dashboard.dashboardFragment">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/itemsswipetorefresh"

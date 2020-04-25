@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="dataCommunityViewModel" type="org.hz240.wallefy.communityList.CommunityListViewModel" />
+        <variable name="dataCommunityViewModel" type="org.hz240.wallefy.viewModel.CommunityListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/root_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".communityList.joinCommunityFragment">
+        tools:context=".ui.communityList.joinCommunityFragment">
 
         <ScrollView
             android:id="@+id/header"

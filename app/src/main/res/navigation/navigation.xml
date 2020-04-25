@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/dashboard"
-        android:name="org.hz240.wallefy.dashboard.dashboardFragment"
+        android:name="org.hz240.wallefy.ui.main.dashboard.dashboardFragment"
         android:label="Dashboard" >
         <action
             android:id="@+id/action_to_dashboard_to_to_pengeluaran"
@@ -38,7 +38,7 @@
         tools:layout="@layout/fragment_anggota" />
     <fragment
         android:id="@+id/pemasukan"
-        android:name="org.hz240.wallefy.pemasukan.pemasukanFragment"
+        android:name="org.hz240.wallefy.ui.main.pemasukan.pemasukanFragment"
         android:label="Pemasukan"
         tools:layout="@layout/fragment_pemasukan" >
         <action
@@ -51,7 +51,7 @@
     </fragment>
     <fragment
         android:id="@+id/pengeluaran"
-        android:name="org.hz240.wallefy.pengeluaran.pengeluaranFragment"
+        android:name="org.hz240.wallefy.ui.main.pengeluaran.pengeluaranFragment"
         android:label="Pengeluaran"
         tools:layout="@layout/fragment_pengeluaran" >
         <action
@@ -64,7 +64,7 @@
     </fragment>
     <fragment
         android:id="@+id/tambahPemasukan"
-        android:name="org.hz240.wallefy.pemasukan.tambahPemasukan"
+        android:name="org.hz240.wallefy.ui.main.pemasukan.tambahPemasukan"
         android:label="Tambah Pemasukan">
         <action
             android:id="@+id/action_tambahPemasukan_to_pemasukan"
@@ -76,7 +76,7 @@
     </fragment>
     <fragment
         android:id="@+id/tambahPengeluaran"
-        android:name="org.hz240.wallefy.pengeluaran.tambahPengeluaran"
+        android:name="org.hz240.wallefy.ui.main.pengeluaran.tambahPengeluaran"
         android:label="Tambah Pengeluaran">
         <action
             android:id="@+id/action_tambahPengeluaran_to_pengeluaran"

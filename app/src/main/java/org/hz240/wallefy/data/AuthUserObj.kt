@@ -86,7 +86,7 @@ object AuthUserObj {
                     doc = docRef.get().await()
                 }else {
                     if (doc.data!!["username"] == null || doc.data!!["status"] == null) {
-                        Log.i("tesAuth", "data null")
+
                     }
                 }
 
