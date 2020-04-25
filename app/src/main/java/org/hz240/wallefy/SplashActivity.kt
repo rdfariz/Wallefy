@@ -30,7 +30,7 @@ class SplashActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRec
 
     private val vm = Job()
     private val crScope = CoroutineScope(vm + Dispatchers.Main)
-    private val SPLASH_TIME_OUT:Long = 1800
+    private val SPLASH_TIME_OUT:Long = 1000
 
     init {
         crScope.launch {

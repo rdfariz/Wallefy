@@ -7,9 +7,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_people.view.*
+import kotlinx.android.synthetic.main.item_transactions.view.*
 import org.hz240.wallefy.R
 
-class AnggotaAdapter(private val myDataset: ArrayList<HashMap<String, Any?>>) :
+class AnggotaAdapter(private val myDataset: ArrayList<HashMap<String, Any?>>, val onClickListener: OnClickListener) :
     RecyclerView.Adapter<AnggotaAdapter.MyViewHolder>() {
 
     // Provide a reference to the views for each data item
@@ -40,7 +41,15 @@ class AnggotaAdapter(private val myDataset: ArrayList<HashMap<String, Any?>>) :
         holder.people.tv_status.text = type.capitalize()
 
         picasso.load(myDataset[position].get("photoUrl").toString()).placeholder(R.drawable.ic_sync_black_24dp).error(R.drawable.ic_person_white_24dp).into(holder.people.iv_user_image)
+
+        holder.people.container_people.setOnClickListener {
+            onClickListener.onClick(myDataset[position])
+        }
     }
 
     override fun getItemCount() = myDataset.size
+
+    class OnClickListener(val clickListener: (people: HashMap<String, Any?>) -> Unit) {
+        fun onClick(people: HashMap<String, Any?>) = clickListener(people)
+    }
 }

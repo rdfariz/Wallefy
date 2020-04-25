@@ -11,20 +11,20 @@
         android:label="Daftar Komunitas"
         tools:layout="@layout/fragment_community_list">
         <action
-            android:id="@+id/action_communityListFragment_to_pengaturanFragment"
-            app:destination="@id/pengaturanFragment" />
-        <action
             android:id="@+id/action_communityListFragment_to_joinCommunityFragment"
             app:destination="@id/joinCommunityFragment"
             app:enterAnim="@anim/enter_from_right"
             app:exitAnim="@anim/exit_to_left"
             app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_communityListFragment_to_toCreateCommunity"
+            app:destination="@id/toCreateCommunity"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
     </fragment>
-    <fragment
-        android:id="@+id/pengaturanFragment"
-        android:name="org.hz240.wallefy.pengaturan.pengaturanFragment"
-        android:label="Pengaturan" />
     <fragment
         android:id="@+id/joinCommunityFragment"
         android:name="org.hz240.wallefy.communityList.joinCommunityFragment"
@@ -32,6 +32,32 @@
         tools:layout="@layout/fragment_join_community" >
         <action
             android:id="@+id/action_joinCommunityFragment_to_communityListFragment"
+            app:destination="@id/communityListFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_joinCommunityFragment_to_createCommunityFragment"
+            app:destination="@id/toCreateCommunity"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/toCreateCommunity"
+        android:name="org.hz240.wallefy.communityList.createCommunityFragment"
+        android:label="Buat Komunitas">
+        <action
+            android:id="@+id/action_createCommunityFragment_to_joinCommunityFragment"
+            app:destination="@id/joinCommunityFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_toCreateCommunity_to_communityListFragment"
             app:destination="@id/communityListFragment"
             app:enterAnim="@anim/enter_from_right"
             app:exitAnim="@anim/exit_to_left"

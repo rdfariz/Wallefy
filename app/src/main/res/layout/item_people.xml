@@ -5,78 +5,91 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/profileSection"
-        android:background="@drawable/bg_border_bottom"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/container_people"
+        android:focusable="true"
+        android:checkable="true"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="4dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardElevation="2dp">
 
-        <ImageView
-            android:id="@+id/iv_user_image"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_person_outline_black_24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"></ImageView>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="14dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_user_image"
-            app:layout_constraintStart_toEndOf="@+id/iv_user_image"
-            app:layout_constraintTop_toTopOf="@+id/iv_user_image">
+            <ImageView
+                android:id="@+id/iv_user_image"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:src="@drawable/ic_person_outline_black_24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"></ImageView>
 
-            <TextView
-                android:id="@+id/tv_username"
+            <LinearLayout
+                android:id="@+id/linearLayout2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="DisplayName"
+                android:layout_marginLeft="14dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_user_image"
+                app:layout_constraintStart_toEndOf="@+id/iv_user_image"
+                app:layout_constraintTop_toTopOf="@+id/iv_user_image">
+
+                <TextView
+                    android:id="@+id/tv_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DisplayName"
+                    android:textSize="16sp"
+                    android:textStyle="bold"></TextView>
+
+                <TextView
+                    android:id="@+id/tv_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Email/Type"
+                    android:layout_marginTop="6dp"
+                    android:textSize="14sp"
+                    android:textStyle="bold"></TextView>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_jml_biaya"
+                android:visibility="invisible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="64dp"
+                android:layout_marginRight="64dp"
+                android:text="Rp. -"
                 android:textSize="16sp"
-                android:textStyle="bold"></TextView>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/linearLayout2"></TextView>
 
             <TextView
-                android:id="@+id/tv_status"
+                android:id="@+id/status_bayar"
+                android:visibility="invisible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Email/Type"
                 android:layout_marginTop="6dp"
+                android:text="Status"
+                android:textColor="@color/blue_custom"
                 android:textSize="14sp"
-                android:textStyle="bold"></TextView>
-        </LinearLayout>
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/tv_jml_biaya"
+                app:layout_constraintTop_toBottomOf="@+id/tv_jml_biaya"></TextView>
 
-        <TextView
-            android:id="@+id/tv_jml_biaya"
-            android:visibility="invisible"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="64dp"
-            android:layout_marginRight="64dp"
-            android:text="Rp. -"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/linearLayout2"></TextView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/status_bayar"
-            android:visibility="invisible"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="Status"
-            android:textColor="@color/blue_custom"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/tv_jml_biaya"
-            app:layout_constraintTop_toBottomOf="@+id/tv_jml_biaya"></TextView>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

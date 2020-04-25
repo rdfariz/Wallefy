@@ -3,9 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/settings"
-    app:startDestination="@id/pengaturanUser2">
+    app:startDestination="@id/pengaturanFragment2">
     <fragment
         android:id="@+id/pengaturanUser2"
         android:name="org.hz240.wallefy.pengaturan.pengaturanUser"
-        android:label="pengaturanUser" />
+        android:label="pengaturanUser" >
+        <action
+            android:id="@+id/action_pengaturanUser2_to_pengaturanFragment2"
+            app:destination="@id/pengaturanFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/pengaturanFragment2"
+        android:name="org.hz240.wallefy.pengaturan.pengaturanFragment"
+        android:label="pengaturanFragment" >
+        <action
+            android:id="@+id/action_pengaturanFragment2_to_pengaturanUser2"
+            app:destination="@id/pengaturanUser2" />
+        <action
+            android:id="@+id/action_pengaturanFragment2_to_pengaturanKomunitas2"
+            app:destination="@id/pengaturanKomunitas2" />
+    </fragment>
+    <fragment
+        android:id="@+id/pengaturanKomunitas2"
+        android:name="org.hz240.wallefy.pengaturan.pengaturanKomunitas"
+        android:label="pengaturanKomunitas">
+        <action
+            android:id="@+id/action_pengaturanKomunitas2_to_pengaturanFragment2"
+            app:destination="@id/pengaturanFragment2" />
+    </fragment>
 </navigation>

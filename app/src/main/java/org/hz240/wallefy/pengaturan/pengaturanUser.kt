@@ -1,28 +1,25 @@
 package org.hz240.wallefy.pengaturan
 
-import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.Source
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
 
 import org.hz240.wallefy.R
 import org.hz240.wallefy.dashboard.UserViewModel
 import org.hz240.wallefy.databinding.FragmentPengaturanUserBinding
 import org.hz240.wallefy.utils.FirestoreObj
-import kotlin.coroutines.CoroutineContext
 
 /**
  * A simple [Fragment] subclass.
@@ -45,15 +42,12 @@ class pengaturanUser : Fragment() {
         userLoginVM = ViewModelProviders.of(this).get(UserViewModel::class.java)
         binding.dataUsersViewModel = userLoginVM
 
-//      Sync Photo
-        val picasso = Picasso.get()
-        userLoginVM.userLogin.observe(viewLifecycleOwner, Observer {
-            var photoUrl = it?.get("photoUrl").toString()
-            picasso.load(photoUrl).placeholder(R.drawable.ic_person_white_24dp).error(R.drawable.ic_person_white_24dp).into(binding.ivUserImage)
-        })
-
         binding.toChangeDisplayName.setOnClickListener {
-            changeDisplayName()
+            toChangeDisplayName()
+        }
+
+        binding.topAppBar.setNavigationOnClickListener {
+            activity?.onBackPressed()
         }
 
         _handleLoading()
@@ -61,24 +55,39 @@ class pengaturanUser : Fragment() {
         return binding.root
     }
 
-    fun withEditText() {
+    private fun showMessages(message: String, type: String) {
+        var snackbar: Snackbar? = null
+        snackbar = Snackbar.make(binding.root.rootView.findViewById(R.id.root_layout), message, Snackbar.LENGTH_SHORT)
+        var color = when(type) {
+            "success" -> R.color.green
+            "error" -> R.color.colorAccent
+            else -> R.color.colorPrimary
+        }
+        snackbar.setBackgroundTint(ResourcesCompat.getColor(resources, color, null))
+        snackbar?.show()
+    }
+
+
+    private fun toChangeDisplayName() {
+        changeDisplayName()
+    }
+    fun changeDisplayName() {
         val builder = MaterialAlertDialogBuilder(context)
         val inflater = layoutInflater
-        builder.setTitle("Change Display Name")
+        builder.setTitle("Nama Akun")
         val dialogLayout = inflater.inflate(R.layout.alert_dialog_display_name, null)
         val editText  = dialogLayout.findViewById<EditText>(R.id.et_displayName)
         editText.setText(userLoginVM.userLogin.value?.get("displayName").toString())
         builder.setView(dialogLayout)
         builder.setPositiveButton("Update") { dialogInterface, i ->
             if (editText.text.length != 0 && FirestoreObj._sourceDynamic != Source.CACHE) {
-                crScope.launch {
-                    userLoginVM.changeDisplayName(editText.text.toString())
-                    userLoginVM.migrateData()
+                if (binding.tvUserName.text.toString() != editText.text.toString()) {
+                    exeChangeDisplayName(editText.text.toString())
                 }
             }else if(editText.text.length == 0){
-                Toast.makeText(context, "Display Name tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                showMessages("Nama Akun tidak boleh kosong", "error")
             }else {
-                Toast.makeText(context, "Anda harus terhubung ke jaringan", Toast.LENGTH_SHORT).show()
+                showMessages("Anda harus terhubung ke jaringan", "error")
             }
         }
         builder.setNegativeButton("Batal") { dialogInterface: DialogInterface, i: Int ->
@@ -86,10 +95,18 @@ class pengaturanUser : Fragment() {
         }
         builder.show()
     }
-
-    private fun changeDisplayName() {
-        withEditText()
+    private fun exeChangeDisplayName(newDisplayName: String) {
+        crScope.launch {
+            val obj = userLoginVM.changeDisplayName(newDisplayName)
+            if (obj["status"] == true) {
+                showMessages(obj["message"].toString(), "success")
+                userLoginVM.migrateData()
+            }else {
+                showMessages(obj["message"].toString(), "error")
+            }
+        }
     }
+
     private fun changePhotoUrl() {
 
     }

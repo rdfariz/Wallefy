@@ -8,262 +8,258 @@ xmlns:tools="http://schemas.android.com/tools">
         <variable name="dataCommunityViewModel" type="org.hz240.wallefy.communityList.CommunityListViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFFFF"
         tools:context=".pengaturan.pengaturanFragment">
 
-<!--        <ProgressBar-->
-<!--            android:id="@+id/progressBar2"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:indeterminateTint="@color/gray_custom"-->
-<!--            android:visibility="invisible"-->
-<!--            app:layout_constraintBottom_toTopOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="parent"-->
-<!--            app:toggleLoading="@{dataCommunityViewModel.loading}"></ProgressBar>-->
-
-        <ScrollView
-            android:id="@+id/scrollView2"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#ffffff">
+                android:layout_height="?attr/actionBarSize"
+                app:title="Pengaturan"
+                app:navigationIcon="@drawable/ic_close_black_24dp"
+                style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            />
 
-<!--                <ImageView-->
-<!--                    android:id="@+id/imageView"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="240dp"-->
-<!--                    android:scaleType="centerCrop"-->
-<!--                    android:src="@drawable/background_curve"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent"></ImageView>-->
+        </com.google.android.material.appbar.AppBarLayout>
 
-<!--                &lt;!&ndash;        <androidx.constraintlayout.widget.ConstraintLayout&ndash;&gt;-->
-<!--                &lt;!&ndash;            android:id="@+id/profileSection"&ndash;&gt;-->
-<!--                &lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
-<!--                &lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
-<!--                &lt;!&ndash;            android:layout_marginHorizontal="24dp"&ndash;&gt;-->
-<!--                &lt;!&ndash;            android:layout_marginTop="16dp"&ndash;&gt;-->
-<!--                &lt;!&ndash;            app:layout_constraintTop_toTopOf="parent">&ndash;&gt;-->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-<!--                &lt;!&ndash;            <Button&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:id="@+id/btn_close"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:layout_width="25dp"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:layout_height="25dp"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:layout_gravity="center"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:background="@drawable/mdi_close"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:drawablePadding="5dp"&ndash;&gt;-->
-<!--                &lt;!&ndash;                app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;-->
-<!--                &lt;!&ndash;                app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
-<!--                &lt;!&ndash;                app:layout_constraintTop_toTopOf="parent" />&ndash;&gt;-->
-<!--                &lt;!&ndash;        </androidx.constraintlayout.widget.ConstraintLayout>&ndash;&gt;-->
-
-<!--                <LinearLayout-->
-<!--                    android:id="@+id/linearLayout"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:gravity="center"-->
-<!--                    android:layout_marginTop="40dp"-->
-<!--                    android:orientation="vertical"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent">-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/tv_username"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:text="@{@string/username_print(dataUsersViewModel.userLogin.displayName)}"-->
-<!--                        android:textSize="20sp"-->
-<!--                        android:textStyle="bold"-->
-<!--                        android:textColor="#ffffff"></TextView>-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/tv_email"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:text="@{dataUsersViewModel.userLogin.email.toString()}"-->
-<!--                        android:textSize="16sp"-->
-<!--                        android:textColor="#ffffff"></TextView>-->
-<!--                </LinearLayout>-->
-
-<!--                <ImageView-->
-<!--                    android:id="@+id/iv_user_image"-->
-<!--                    android:layout_width="100dp"-->
-<!--                    android:layout_height="100dp"-->
-<!--                    android:layout_marginTop="32dp"-->
-<!--                    android:src="@drawable/ic_person_white_24dp"-->
-<!--                    app:layout_constraintEnd_toEndOf="@+id/linearLayout"-->
-<!--                    app:layout_constraintHorizontal_bias="0.481"-->
-<!--                    app:layout_constraintStart_toStartOf="@+id/linearLayout"-->
-<!--                    app:layout_constraintTop_toBottomOf="@+id/linearLayout"></ImageView>-->
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/to_account_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/iv_user_image">
+                    android:paddingVertical="16dp"
+                    android:paddingHorizontal="32dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/to_account_info"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="16dp"
-                        android:paddingHorizontal="32dp"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:background="?attr/selectableItemBackground"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <Button
-                            android:id="@+id/icon_account_info"
-                            android:layout_width="30dp"
-                            android:layout_height="32dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/ic_person_outline_black_24dp"
-                            android:drawablePadding="5dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginLeft="16dp"
-                            android:text="Account Info"
-                            android:textSize="16sp"
-                            app:layout_constraintBottom_toBottomOf="@+id/icon_account_info"
-                            app:layout_constraintStart_toEndOf="@+id/icon_account_info"
-                            app:layout_constraintTop_toTopOf="@+id/icon_account_info"
-                            app:layout_constraintVertical_bias="0.545"></TextView>
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/to_notification"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:background="?attr/selectableItemBackground"
-                        android:paddingVertical="16dp"
-                        android:paddingHorizontal="32dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/to_account_info">
-
-                        <Button
-                            android:id="@+id/icon_notification"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/ic_notifications_none_black_24dp"
-                            android:drawablePadding="5dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginLeft="16dp"
-                            android:text="Notifications"
-                            android:textSize="16sp"
-                            app:layout_constraintBottom_toBottomOf="@+id/icon_notification"
-                            app:layout_constraintStart_toEndOf="@+id/icon_notification"
-                            app:layout_constraintTop_toTopOf="@+id/icon_notification"
-                            app:layout_constraintVertical_bias="0.545"></TextView>
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/to_out_community"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:background="?attr/selectableItemBackground"
-                        android:paddingVertical="16dp"
-                        android:paddingHorizontal="32dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/to_notification">
-
-                        <Button
-                            android:id="@+id/outCm"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/ic_directions_run_black_24dp"
-                            android:drawablePadding="5dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginLeft="16dp"
-                            android:text="Out Community"
-                            android:textSize="16sp"
-                            app:layout_constraintBottom_toBottomOf="@+id/outCm"
-                            app:layout_constraintStart_toEndOf="@+id/outCm"
-                            app:layout_constraintTop_toTopOf="@+id/outCm"
-                            app:layout_constraintVertical_bias="0.545"></TextView>
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/to_signout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingVertical="16dp"
-                        android:paddingHorizontal="32dp"
+                    <Button
+                        android:id="@+id/icon_account_info"
+                        style="@style/Widget.MaterialComponents.Button.UnelevatedButton.Icon"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:includeFontPadding="false"
+                        android:insetLeft="0dp"
+                        android:insetTop="0dp"
+                        android:insetRight="0dp"
+                        android:insetBottom="0dp"
+                        android:padding="0dp"
+                        android:paddingStart="4dp"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingEnd="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"
+                        app:backgroundTint="@android:color/transparent"
+                        app:cornerRadius="100dp"
+                        app:elevation="0dp"
+                        app:icon="@drawable/ic_person_outline_black_24dp"
+                        app:iconPadding="0dp"
+                        app:iconSize="24dp"
+                        app:iconTint="@color/colorPrimaryDark"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/to_out_community">
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <Button
-                            android:id="@+id/icon_signout"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/ic_exit_to_app_black_24dp"
-                            android:drawablePadding="5dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginLeft="16dp"
-                            android:text="Log Out"
-                            android:textSize="16sp"
-                            app:layout_constraintBottom_toBottomOf="@+id/icon_signout"
-                            app:layout_constraintStart_toEndOf="@+id/icon_signout"
-                            app:layout_constraintTop_toTopOf="@+id/icon_signout"
-                            app:layout_constraintVertical_bias="0.545"></TextView>
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:text="Info Akun"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/icon_account_info"
+                        app:layout_constraintStart_toEndOf="@+id/icon_account_info"
+                        app:layout_constraintTop_toTopOf="@+id/icon_account_info"
+                        app:layout_constraintVertical_bias="0.545"></TextView>
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/to_settingsCommunity"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:paddingVertical="16dp"
+                    android:paddingHorizontal="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/to_account_info">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <Button
+                        android:id="@+id/icon_community"
+                        style="@style/Widget.MaterialComponents.Button.UnelevatedButton.Icon"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:includeFontPadding="false"
+                        android:insetLeft="0dp"
+                        android:insetTop="0dp"
+                        android:insetRight="0dp"
+                        android:insetBottom="0dp"
+                        android:padding="0dp"
+                        android:paddingStart="4dp"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingEnd="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"
+                        app:backgroundTint="@android:color/transparent"
+                        app:cornerRadius="100dp"
+                        app:elevation="0dp"
+                        app:icon="@drawable/ic_group_work_black_24dp"
+                        app:iconPadding="0dp"
+                        app:iconSize="24dp"
+                        app:iconTint="@color/colorPrimaryDark"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:text="Info Komunitas"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/icon_community"
+                        app:layout_constraintStart_toEndOf="@+id/icon_community"
+                        app:layout_constraintTop_toTopOf="@+id/icon_community"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/to_out_community"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:paddingVertical="16dp"
+                    android:paddingHorizontal="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/to_notification">
+
+                    <Button
+                        android:id="@+id/outCm"
+                        style="@style/Widget.MaterialComponents.Button.UnelevatedButton.Icon"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:includeFontPadding="false"
+                        android:insetLeft="0dp"
+                        android:insetTop="0dp"
+                        android:insetRight="0dp"
+                        android:insetBottom="0dp"
+                        android:padding="0dp"
+                        android:paddingStart="4dp"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingEnd="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"
+                        app:backgroundTint="@android:color/transparent"
+                        app:cornerRadius="100dp"
+                        app:elevation="0dp"
+                        app:icon="@drawable/ic_directions_run_black_24dp"
+                        app:iconPadding="0dp"
+                        app:iconSize="24dp"
+                        app:iconTint="@color/colorPrimaryDark"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:text="Keluar Komunitas"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/outCm"
+                        app:layout_constraintStart_toEndOf="@+id/outCm"
+                        app:layout_constraintTop_toTopOf="@+id/outCm"
+                        app:layout_constraintVertical_bias="0.545"></TextView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/to_signout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingVertical="16dp"
+                    android:paddingHorizontal="32dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/to_out_community">
+
+                    <Button
+                        android:id="@+id/icon_signout"
+                        style="@style/Widget.MaterialComponents.Button.UnelevatedButton.Icon"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:includeFontPadding="false"
+                        android:insetLeft="0dp"
+                        android:insetTop="0dp"
+                        android:insetRight="0dp"
+                        android:insetBottom="0dp"
+                        android:padding="0dp"
+                        android:paddingStart="4dp"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingEnd="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"
+                        app:backgroundTint="@android:color/transparent"
+                        app:cornerRadius="100dp"
+                        app:elevation="0dp"
+                        app:icon="@drawable/ic_exit_to_app_black_24dp"
+                        app:iconPadding="0dp"
+                        app:iconSize="24dp"
+                        app:iconTint="@color/colorPrimaryDark"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:text="Keluar Akun"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/icon_signout"
+                        app:layout_constraintStart_toEndOf="@+id/icon_signout"
+                        app:layout_constraintTop_toTopOf="@+id/icon_signout"
+                        app:layout_constraintVertical_bias="0.545"></TextView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

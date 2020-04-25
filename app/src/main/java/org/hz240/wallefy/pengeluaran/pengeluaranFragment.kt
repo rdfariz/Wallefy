@@ -1,14 +1,17 @@
 package org.hz240.wallefy.pengeluaran
 
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.*
@@ -16,12 +19,13 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import org.hz240.wallefy.R
 import org.hz240.wallefy.communityList.CommunityListActivity
 import org.hz240.wallefy.communityList.CommunityListViewModel
 import org.hz240.wallefy.dashboard.TransactionsAdapter
-import org.hz240.wallefy.databinding.FragmentPemasukanBinding
+import org.hz240.wallefy.data.GlobalObj
 import org.hz240.wallefy.databinding.FragmentPengeluaranBinding
 import org.hz240.wallefy.viewModel.ActivityViewModel
 
@@ -54,6 +58,8 @@ class pengeluaranFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (arguments?.getBoolean("onRefresh") == true) {
+            refresh()
+        }else if (GlobalObj.getPending() == true) {
             refresh()
         }
     }
@@ -101,7 +107,9 @@ class pengeluaranFragment : Fragment() {
                 binding.emptyView.visibility = View.INVISIBLE
                 binding.rvPengeluaran.visibility = View.VISIBLE
             }
-            viewAdapter = TransactionsAdapter(pengeluaran)
+            viewAdapter = TransactionsAdapter(pengeluaran, TransactionsAdapter.OnClickListener{
+                toDetailTransaction(it)
+            })
             recyclerView = binding.rvPengeluaran.apply {
                 layoutManager = viewManager
                 adapter = viewAdapter
@@ -127,9 +135,22 @@ class pengeluaranFragment : Fragment() {
             it.findNavController()?.navigate(R.id.action_pengeluaran_to_tambahPengeluaran)
         }
 
+        _handleInitLoading()
         _handleLoading()
 
         return binding.root
+    }
+
+    private fun showMessages(message: String, type: String) {
+        var snackbar: Snackbar? = null
+        snackbar = Snackbar.make(binding.root.rootView.findViewById(R.id.root_layout), message, Snackbar.LENGTH_SHORT)
+        var color = when(type) {
+            "success" -> R.color.green
+            "error" -> R.color.colorAccent
+            else -> R.color.colorPrimary
+        }
+        snackbar.setBackgroundTint(ResourcesCompat.getColor(resources, color, null))
+        snackbar?.show()
     }
 
     private fun refresh() {
@@ -143,6 +164,73 @@ class pengeluaranFragment : Fragment() {
                     intent.flags =  Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     it.startActivity(intent)
                 }
+            }
+        }
+    }
+
+    private fun toDetailTransaction(transaction: HashMap<String, Any?>) {
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
+        val inflater = layoutInflater
+        val dialogLayout = inflater.inflate(R.layout.alert_detail_transactions, null)
+        val dialog: androidx.appcompat.app.AlertDialog
+
+        val idTransaction = transaction["id"].toString()
+        val title = transaction["title"].toString()
+        val type = transaction["type"].toString()
+        val biaya = transaction["biaya"].toString()
+        when(type) {
+            "pemasukan" -> dialogLayout.findViewById<ImageView>(R.id.iv_type_transaction).setImageResource(R.drawable.ic_undraw_savings_dwkw)
+            "pengeluaran" -> dialogLayout.findViewById<ImageView>(R.id.iv_type_transaction).setImageResource(R.drawable.ic_undraw_result_5583)
+        }
+
+        isAdmin.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                dialogLayout.findViewById<Button>(R.id.to_delete_transactions).visibility = View.VISIBLE
+            }else {
+                dialogLayout.findViewById<Button>(R.id.to_delete_transactions).visibility = View.GONE
+            }
+        })
+
+        alertDialogBuilder.setView(dialogLayout)
+        dialog = alertDialogBuilder.create()
+
+        dialogLayout.findViewById<TextView>(R.id.tv_title_transaction).text = "Transaksi: ${title.capitalize()}"
+        dialogLayout.findViewById<TextView>(R.id.tv_type_transaction).text = "Jenis: ${type.capitalize()}"
+        dialogLayout.findViewById<TextView>(R.id.tv_biaya_transaction).text = "Biaya: ${biaya}"
+        dialogLayout.findViewById<Button>(R.id.to_delete_transactions).setOnClickListener {
+            idCommunity?.let { id ->
+                toDeleteTransaction(id, idTransaction, title)
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
+    }
+    private fun toDeleteTransaction(idCommunity: String, idTransaction: String, title: String) {
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
+        alertDialogBuilder.setTitle("Hapus Transaksi")
+        alertDialogBuilder.setMessage("Anda yakin ingin menghapus Transaksi ${title}")
+        alertDialogBuilder.setPositiveButton("Hapus") { dialogInterface: DialogInterface, i: Int ->
+            exeDeleteTransaction(idCommunity, idTransaction)
+        }
+        alertDialogBuilder.setNegativeButton("Batal") { dialogInterface: DialogInterface, i: Int ->
+
+        }
+        alertDialogBuilder.show()
+    }
+    private fun exeDeleteTransaction(idCommunity: String, idTransaction: String) {
+        crScope.launch {
+            try {
+                val obj = activityVM.deleteTransaction(idCommunity, idTransaction)
+                if (obj["status"] == true) {
+                    showMessages(obj["message"].toString(), "success")
+                    refresh()
+                }else {
+                    showMessages(obj["message"].toString(), "error")
+                }
+            }catch (e: Exception) {
+
+            }finally {
+
             }
         }
     }
@@ -161,9 +249,20 @@ class pengeluaranFragment : Fragment() {
     }
     private fun clearPengeluaran() {
         crScope.launch {
-            idCommunity?.let {
-                activityVM.clearPengeluaran(it)
-                refresh()
+            try {
+                idCommunity?.let {
+                    val obj = activityVM.clearPengeluaran(it)
+                    if (obj["status"] == true) {
+                        showMessages(obj["message"].toString(), "success")
+                        refresh()
+                    }else {
+                        showMessages(obj["message"].toString(), "error")
+                    }
+                }
+            }catch (e: Exception) {
+
+            }finally {
+
             }
         }
     }
@@ -179,6 +278,25 @@ class pengeluaranFragment : Fragment() {
         val dialog = alertDialogBuilder.create()
 
         activityVM.loading.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                dialog.show()
+            }else {
+                dialog.dismiss()
+            }
+        })
+    }
+
+    fun _handleInitLoading() {
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
+        val inflater = layoutInflater
+        val dialogLayout = inflater.inflate(R.layout.alert_dialog_loading, null)
+
+        alertDialogBuilder.setTitle("Menyiapkan Data")
+        alertDialogBuilder.setCancelable(false)
+        alertDialogBuilder.setView(dialogLayout)
+        val dialog = alertDialogBuilder.create()
+
+        communityListVM.loading.observe(viewLifecycleOwner, Observer {
             if (it == true) {
                 dialog.show()
             }else {

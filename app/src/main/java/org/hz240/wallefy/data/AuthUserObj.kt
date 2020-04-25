@@ -45,17 +45,24 @@ object AuthUserObj {
     fun toSignOut() {
         signout()
     }
-    suspend fun setDisplayName(newData: String) {
-        changeDisplayName(newData)
+    suspend fun setDisplayName(newData: String): HashMap<String, Any?> {
+        return changeDisplayName(newData)
     }
 
-
-    private suspend fun changeDisplayName(newData: String) {
+    private suspend fun changeDisplayName(newData: String): HashMap<String, Any?> {
+        val response = hashMapOf<String, Any?>("status" to false, "message" to null)
         val uid = FirestoreObj._auth.currentUser?.uid
         if (uid != null) {
             session?.set("displayName", newData)
             db.collection("users").document(uid).update("displayName", newData).await()
+            response["status"] = true
+            response["message"] = "Berhasil memperbarui akun"
+        }else {
+            response["status"] = false
+            response["message"] = "Gagal memperbarui akun"
         }
+
+        return response
     }
     private fun signout() {
         session = null
@@ -82,8 +89,9 @@ object AuthUserObj {
                         Log.i("tesAuth", "data null")
                     }
                 }
+
                 val obj = doc.toObject(UserInfo::class.java)
-                map = hashMapOf("username" to obj?.username, "displayName" to obj?.displayName, "email" to obj?.email, "status" to obj?.status, "photoUrl" to obj?.photoUrl)
+                map = hashMapOf("id" to uid,"username" to obj?.username, "displayName" to obj?.displayName, "email" to obj?.email, "status" to obj?.status, "photoUrl" to obj?.photoUrl)
             }catch (e: Throwable) {
 
             }finally {

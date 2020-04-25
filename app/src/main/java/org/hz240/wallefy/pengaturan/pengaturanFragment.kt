@@ -1,26 +1,21 @@
 package org.hz240.wallefy.pengaturan
 
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.*
 import androidx.navigation.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.squareup.picasso.Picasso
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import org.hz240.wallefy.R
 import org.hz240.wallefy.communityList.CommunityListActivity
@@ -47,6 +42,8 @@ class pengaturanFragment : Fragment() {
     private val crScope = CoroutineScope(vm + Dispatchers.Main)
     private lateinit var sharedPref : SharedPreferences
 
+    private val isAdmin = MutableLiveData<Boolean>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -70,21 +67,23 @@ class pengaturanFragment : Fragment() {
         binding.dataUsersViewModel = userLoginVM
         binding.dataCommunityViewModel = communityListVM
 
-//        val picasso = Picasso.get()
-//        userLoginVM.userLogin.observe(viewLifecycleOwner, Observer {
-//            Log.i("tes_pngaturan", it.toString())
-//            var photoUrl = it?.get("photoUrl").toString()
-//            picasso.load(photoUrl).placeholder(R.drawable.ic_sync_black_24dp).error(R.drawable.ic_person_white_24dp).into(binding.ivUserImage)
-//            binding.tvEmail.text = it?.get("email").toString()
-//            binding.tvUsername.text = it?.get("displayName").toString()
-//        })
+        communityListVM.communitySingle.observe(viewLifecycleOwner, Observer {
+            isAdmin.value = it!!["isAdmin"] as Boolean
+        })
 
-        binding.toAccountInfo.setOnClickListener {view: View ->
-//            view.findNavController().navigate(R.id.action_pengaturan_to_pengaturanUser2)
-            activity?.let{
-                val intent = Intent (it, SettingsActivity::class.java)
-                it.startActivity(intent)
+        isAdmin.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                binding.toSettingsCommunity.visibility = View.VISIBLE
+            }else {
+                binding.toSettingsCommunity.visibility = View.GONE
             }
+        })
+
+        binding.toAccountInfo.setOnClickListener {
+            it.findNavController().navigate(R.id.action_pengaturanFragment2_to_pengaturanUser2)
+        }
+        binding.toSettingsCommunity.setOnClickListener {
+            it.findNavController().navigate(R.id.action_pengaturanFragment2_to_pengaturanKomunitas2)
         }
         binding.toSignout.setOnClickListener {view: View ->
             crScope.launch {
@@ -96,10 +95,46 @@ class pengaturanFragment : Fragment() {
                 outCommunity("Keluar komunitas", "Anda yakin ingin keluar komunitas?", idCommunity.toString())
             }
         }
+
+        binding.topAppBar.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
+
+        _handleLoading()
+
         return binding.root
     }
 
+    private fun showMessages(message: String, type: String) {
+        var snackbar: Snackbar? = null
+        snackbar = Snackbar.make(binding.root.rootView.findViewById(R.id.root_layout), message, Snackbar.LENGTH_SHORT)
+        var color = when(type) {
+            "success" -> R.color.green
+            "error" -> R.color.colorAccent
+            else -> R.color.colorPrimary
+        }
+        snackbar.setBackgroundTint(ResourcesCompat.getColor(resources, color, null))
+        snackbar?.show()
+    }
 
+    fun _handleLoading() {
+        val alertDialogBuilder = MaterialAlertDialogBuilder(context)
+        val inflater = layoutInflater
+        val dialogLayout = inflater.inflate(R.layout.alert_dialog_loading, null)
+
+        alertDialogBuilder.setTitle("Memproses Data")
+        alertDialogBuilder.setCancelable(false)
+        alertDialogBuilder.setView(dialogLayout)
+        val dialog = alertDialogBuilder.create()
+
+        communityListVM.loading.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                dialog.show()
+            }else {
+                dialog.dismiss()
+            }
+        })
+    }
 
     private suspend fun signout() {
         val alertDialogBuilder = MaterialAlertDialogBuilder(context)
@@ -132,7 +167,7 @@ class pengaturanFragment : Fragment() {
                         it.startActivity(intent)
                     }
                 }else {
-                    Toast.makeText(context, "Gagal keluar komunitas", Toast.LENGTH_SHORT).show()
+                    showMessages("Gagal keluar komunitas", "error")
                 }
             }
         }

@@ -19,6 +19,16 @@ fun toggleLoading(progressBar: ProgressBar, bool: Boolean) {
 }
 
 @BindingAdapter("toggleLoading")
+fun toggleLoading(item: com.google.android.material.floatingactionbutton.FloatingActionButton, bool: Boolean) {
+    item.bringToFront()
+    if (bool == true) {
+        item.visibility = View.INVISIBLE
+    }else {
+        item.visibility = View.VISIBLE
+    }
+}
+
+@BindingAdapter("toggleLoading")
 fun toggleLoading(item: androidx.constraintlayout.widget.ConstraintLayout, bool: Boolean) {
     item.bringToFront()
     if (bool == true) {

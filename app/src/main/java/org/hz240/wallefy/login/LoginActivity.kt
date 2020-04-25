@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -35,7 +37,7 @@ class LoginActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRece
         if (!isConnected) {
             snackbar?.dismiss()
             FirestoreObj.changeSource(Source.CACHE)
-            snackbar = Snackbar.make(findViewById(R.id.root_layout), "You are offline", Snackbar.LENGTH_SHORT) //Assume "rootLayout" as the root layout of every activity
+            snackbar = Snackbar.make(findViewById(R.id.root_layout), "Kamu harus terhubung ke jaringan", Snackbar.LENGTH_SHORT) //Assume "rootLayout" as the root layout of every activity
             snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.colorAccent))
             snackbar?.show()
         } else if (isConnected) {
@@ -61,5 +63,13 @@ class LoginActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRece
         registerReceiver(ConnectivityReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+        val navCtrl = this.findNavController(R.id.nav_host_fragment_container)
+
+        NavigationUI.setupActionBarWithNavController(this, navCtrl)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navCtrl = this.findNavController(R.id.nav_host_fragment_container)
+        return navCtrl.navigateUp()
     }
 }
